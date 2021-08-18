@@ -1,0 +1,22 @@
+<p>counter works!</p>
+<a routerLink="/home">back</a>
+
+<div *ngFor="let player of others; let i = index" class="player">
+    <span>Name: {{this.players[player].Name}}</span>
+    <span>Life: {{this.players[player].Life}}</span>
+    <div class="buttons">
+    <button (click)="addLife(i)">Add</button>
+    <button (click)="subtractLife(i)">sub</button>
+    </div>
+
+    <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
+        <button (click)="addCmdrDmg(i,j)">add</button>
+        {{dmg}}
+        <button (click)="subCmdrDmg(i,j)">sub</button>
+    </div>
+
+</div>
+
+<button (click)="addPlayer()">add player</button>
+
+<button (click)="startGame()">start game</button>
