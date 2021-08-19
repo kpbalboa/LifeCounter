@@ -1,9 +1,11 @@
-<p>counter works!</p>
+
 <a routerLink="/home">back</a>
 
-<div *ngFor="let player of others; let i = index" class="player">
-    <span>Name: {{this.players[player].Name}}</span>
-    <span>Life: {{this.players[player].Life}}</span>
+<!-- <div *ngFor="let player of players; let i = index" class="player" [ngClass]="'player'+ i"> -->
+    <div *ngFor="let player of players; let i = index" class="player">
+        <div  *ngIf="i != this.you">
+    <span>Name: {{this.players[i].Name}}</span>
+    <span>Life: {{this.players[i].Life}}</span>
     <div class="buttons">
     <button (click)="addLife(i)">Add</button>
     <button (click)="subtractLife(i)">sub</button>
@@ -11,12 +13,27 @@
 
     <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
         <button (click)="addCmdrDmg(i,j)">add</button>
-        {{dmg}}
+        {{this.players[j].Commander}} {{dmg}}
         <button (click)="subCmdrDmg(i,j)">sub</button>
     </div>
-
+</div>
 </div>
 
+<div *ngIf="this.you == 0">
 <button (click)="addPlayer()">add player</button>
-
 <button (click)="startGame()">start game</button>
+</div>
+
+<div class="you">
+     <span>Name: {{this.players[this.you].Name}}</span>
+    <span>Life: {{this.players[this.you].Life}}</span>
+    <div class="buttons">
+        <button (click)="addLife(this.you)">Add</button>
+        <button (click)="subtractLife(this.you)">sub</button>
+        </div>
+        
+        <div *ngFor="let dmg of cmdrDmg[this.you]; let i = index">
+           {{this.players[i].Commander}} {{dmg}}
+        </div>
+   
+</div>

@@ -11,18 +11,34 @@ export class CounterComponent implements OnInit {
 
   constructor( private data: DataService) { }
 
- others: any = [];
  players: any =[];
  cmdrDmg:any = [];
+ you: number = 0
+ 
 
+ 
   ngOnInit(): void {
-    this.data.addPlayer();
+    this.you = this.data.you
+    console.log(this.data.players)
+    // if(this.you == undefined){
+    // this.data.addPlayer();
+    // }
     this.players = this.data.players;
+    this.data.oPlayers.subscribe((data)=>{
+     this.players= data
+    })
+    // this.data.sendGameData();
+    // this.you = this.data.you
+    this.data.cmdrDmg.subscribe((data)=>{
+      this.cmdrDmg= data
+     })
+     
+    
   }
 
   addPlayer(){
-    this.data.addPlayer();
-    this.others= this.data.others;
+    // this.data.addPlayer();
+    console.log(this.players)
   }
 
   subtractLife(i: number){
@@ -45,5 +61,6 @@ export class CounterComponent implements OnInit {
   subCmdrDmg(i: number, j: number){
     this.data.subCmdr(i, j)
   }
+
 
 }

@@ -1,0 +1,13 @@
+<p>join works!</p>
+<form #joinForm="ngForm" (ngSubmit)='joinRoom(joinForm)'>
+
+
+    <label>Room Number</label>
+    <input type="number" required ngModel  #FirstName="ngModel" name="roomNum">
+    <label>name</label>
+    <input type="text" required ngModel  #FirstName="ngModel" name="User">
+    <label>Commander</label>
+    <input type="text" required ngModel  #FirstName="ngModel" name="Commander">
+
+    <button>Submit</button>
+</form>

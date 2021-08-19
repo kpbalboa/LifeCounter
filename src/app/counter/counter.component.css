@@ -7,3 +7,12 @@
 .buttons{
     display: flex;
 }
+
+.hidden{
+    display: none;
+}
+
+.you{
+    display: flex;
+    flex-direction: column;
+}

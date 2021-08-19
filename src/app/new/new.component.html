@@ -1,0 +1,19 @@
+<p>new works!</p>
+
+<!-- <button (click)="createRoom()">Create Room</button> -->
+
+
+
+<form #joinForm="ngForm" (ngSubmit)='createRoom(joinForm)'>
+
+
+    <label>name</label>
+    <input type="text" required ngModel  #FirstName="ngModel" name="User">
+    <label>Commander</label>
+    <input type="text" required ngModel  #FirstName="ngModel" name="Commander">
+    <label>Starting Life</label>
+    <input type="number" required ngModel  #FirstName="ngModel" name="Life" value="40">
+
+
+    <button>Submit</button>
+</form>
