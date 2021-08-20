@@ -15,9 +15,9 @@ import { JoinComponent } from './join/join.component';
 // const config: SocketIoConfig = { url: 'http://localhost:3000', options: {"transports" : ["websocket"]}
 //  };
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options:{}
+const config: SocketIoConfig = { url: 'http://192.168.1.47:3000', options:{}
  };
-
+//  192.168.1.47
 const appRoutes : Routes = [
   { path: 'home', component: HomeComponent, children:[
     { path: 'newGame',  component: NewComponent},

@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { Router } from '@angular/router';
 
+import { HttpClient} from '@angular/common/http'
 
 
 
@@ -15,8 +16,9 @@ export class DataService {
   private socket: Socket;
 
 
-  constructor( private router: Router ) { 
+  constructor( private router: Router, private http: HttpClient ) { 
     this.socket = io('http://localhost:3000');
+    // this.socket = io('http://192.168.1.47:3000');
     this.socket.on('get data', data =>{
       this.updatePlayers(data.players);
      
@@ -30,11 +32,14 @@ export class DataService {
    this.socket.on('changeLife', data =>{
      this.players[data.players].Life = this.players[data.players].Life+data.amount;
      this._oPlayers.next(this.players)
-    
  })
 
+ this.socket.on('changePoison', data =>{
+  this.players[data.players].Poison = this.players[data.players].Poison+data.amount;
+  this._oPlayers.next(this.players)
+})
+
  this.socket.on('change CDMG', data =>{
-  // this.players[data.players].Life = this.players[data.players].Life+data.amount;
   this.commanderDmg[data.i][data.j] = this.commanderDmg[data.i][data.j]+data.amount;
   this._cmdrDmg.next(this.commanderDmg)
  
@@ -47,15 +52,14 @@ export class DataService {
  this.socket.on("NewRoom", data=>{
   console.log(data);
   this.roomNumber = data;
-
+this._roomNum.next(this.roomNumber);
 
 })
 
-this.socket.on("join room", data=>{
+this.socket.on("join room", (data, cName, cImg)=>{
   
-  // this.roomNumber = data;
 if (this.you == 0){
-this.addPlayer(data)
+this.addPlayer(data, cName, cImg)
 }
 
 })
@@ -69,19 +73,25 @@ oPlayers = this._oPlayers.asObservable();
 _cmdrDmg: Subject<any> = new Subject<[]>();
 cmdrDmg = this._cmdrDmg.asObservable();
 
+_roomNum: Subject<any> = new Subject<[]>();
+roomNum = this._roomNum.asObservable();
+
  players: any = [];
-// others: any = [];
+
 commanderDmg: any = [];
 you:any;
 roomNumber: any;
 
+getCommander(search: any){
+  return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+is%3Acommander`));
+}
 
-
-createRoom(form: any){
+createRoom(form: any, cName: any, cImg: any){
  
   this.you = 0;
   this.socket.emit('NewRoom');
-  const player1 = new Player(form.User, form.Commander , 40);
+  // const player1 = new Player(form.User, cName, cImg , 40);
+  const player1 = new Player("kevin", "Captain Sisay", "https://c1.scryfall.com/file/scryfall-cards/small/front/b/9/b90df81c-d738-46b3-8e96-9db0b3507ee0.jpg?1562741797" , 40);
   this.players.push(player1)
 this.sendGameData();
 this.router.navigate(['counter'])
@@ -89,11 +99,10 @@ this.sendGameData();
 }
 
 
-joinRoom(num: any){
+joinRoom(num: any, CommanderName:any , CommanderImg: any){
  
   this.roomNumber = num.roomNum
-  this.socket.emit('join room', { roomNumber : num});
-  // this.router.navigate(['counter'])
+  this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg });
 
 }
 
@@ -112,8 +121,9 @@ updatecmdr(data: any){
   this._cmdrDmg.next(data.cmdrdmg)
 }
 
-addPlayer(data: any){
-const player1 = new Player(data.User, data.Commander, 40);
+addPlayer(data: any, cName:any, cImg:any){
+  console.log(data)
+const player1 = new Player(data.User, cName, cImg, 40);
 this.players.push(player1)
 this.sendGameData();
 
@@ -121,13 +131,18 @@ this.sendGameData();
 
 subLife(i: number){
   this.socket.emit('changeLife', { players : i, amount: -1, roomNumber : this.roomNumber});
-
- 
 }
 
 addLife(i: number){
   this.socket.emit('changeLife', { players : i, amount: +1, roomNumber : this.roomNumber});
- 
+}
+
+subPoison(i: number){
+  this.socket.emit('changePoison', { players : i, amount: -1, roomNumber : this.roomNumber});
+}
+
+addPoison(i: number){
+  this.socket.emit('changePoison', { players : i, amount: +1, roomNumber : this.roomNumber});
 }
 
 startGame(){

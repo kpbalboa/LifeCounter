@@ -1,39 +1,63 @@
 
 <a routerLink="/home">back</a>
+<span class="room">ROOM: {{this.roomNum}}</span>
 
-<!-- <div *ngFor="let player of players; let i = index" class="player" [ngClass]="'player'+ i"> -->
-    <div *ngFor="let player of players; let i = index" class="player">
-        <div  *ngIf="i != this.you">
-    <span>Name: {{this.players[i].Name}}</span>
-    <span>Life: {{this.players[i].Life}}</span>
+    <div *ngFor="let player of players; let i = index">
+        <div  *ngIf="i !== this.you" class="player">
+            <img src={{this.players[i].commanderImg}} alt="" class="playerImage">
+    <span>{{this.players[i].Name}}</span>
+    <!-- <span>{{this.players[i].Life}}</span> -->
     <div class="buttons">
+        <div>
     <button (click)="addLife(i)">Add</button>
+    <span>{{this.players[i].Life}}</span>
     <button (click)="subtractLife(i)">sub</button>
-    </div>
+</div>
+<div>
+    <button (click)="addPoison(i)">Add</button>
+    <span>{{this.players[i].Poison}}</span>
+    <button (click)="subtractPoison(i)">sub</button>
+</div>
 
-    <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
-        <button (click)="addCmdrDmg(i,j)">add</button>
-        {{this.players[j].Commander}} {{dmg}}
-        <button (click)="subCmdrDmg(i,j)">sub</button>
+    <div *ngIf="this.cmdrDmg.length !== 0">
+        
+    <button (click)="addCmdrDmg(i)">Add</button>
+    <span>{{this.cmdrDmg[i][this.you]}}</span>
+    <button (click)="subCmdrDmg(i)">sub</button>
     </div>
+    </div>
+  
+
+        <!-- <div class="cmdrDmg">
+    <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
+         <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)"> <span>{{dmg}}</span>
+    </div>
+    <div class="CDButtons">
+    <button (click)="addCmdrDmg(i)">add</button>
+    <button (click)="subCmdrDmg(i)">sub </button>
+    </div>
+    </div> -->
 </div>
 </div>
 
 <div *ngIf="this.you == 0">
-<button (click)="addPlayer()">add player</button>
+<!-- <button (click)="addPlayer()">add player</button> -->
 <button (click)="startGame()">start game</button>
 </div>
 
 <div class="you">
-     <span>Name: {{this.players[this.you].Name}}</span>
+    <img src={{this.players[this.you].commanderImg}} alt="" class="youImg">
+     <span>{{this.players[this.you].Name}}(you)</span>
     <span>Life: {{this.players[this.you].Life}}</span>
     <div class="buttons">
         <button (click)="addLife(this.you)">Add</button>
         <button (click)="subtractLife(this.you)">sub</button>
         </div>
         
-        <div *ngFor="let dmg of cmdrDmg[this.you]; let i = index">
-           {{this.players[i].Commander}} {{dmg}}
+        <div class="allCDmg">
+        <div *ngFor="let dmg of cmdrDmg[this.you]; let i = index" class="cmdrDmgDelt">
+            <img src={{this.players[i].commanderImg}} alt=""> <span>{{dmg}}</span>
+        </div>
         </div>
    
 </div>

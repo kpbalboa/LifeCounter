@@ -1,11 +1,35 @@
+.room{
+    top: 12px;
+    right: 12px;
+    position: absolute;
+}
+
 .player{
     display: flex;
     flex-direction: column;
+    position: relative;
+    height: 118px;
+}
+.playerImage{
+    height: auto;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    clip-path: circle(32px at 50px 48px);
+    position: absolute;
 }
 
 
 .buttons{
     display: flex;
+    position: absolute;
+    
+    top: 23%;
+    right: 50%;
+    transform: translate(50%, 70%);
 }
 
 .hidden{
@@ -15,4 +39,76 @@
 .you{
     display: flex;
     flex-direction: column;
+    position: relative;
+    height: 250px;
+}
+
+.you .buttons{
+    top:20%
+}
+
+.youImg{
+    height: auto;
+    width: 115%;
+    /* -webkit-clip-path: circle(300px at 15px 35px); */
+    /* clip-path: circle(70px at 120px 106px); */
+    position: absolute;
+    clip-path: inset(12% 7% 45% 8%);
+    top: -27%;
+    right: 50%;
+    transform: translate(50%);
+    z-index: -1;
+}
+
+.cmdrDmg{
+    display: grid;
+    display: flex;
+}
+
+.cmdrDmg div:nth-child(4){
+    margin-left: 20px;
+}
+
+.cmdrDmg img{
+    width: 50px;
+    height: auto;
+    
+    clip-path: circle(16px at 25px 24px);
+    position: relative;
+    top: 30px;
+}
+.cmdrDmg div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90px;
+    position: relative;
+    top: -35px;
+    width: 50px;
+}
+
+.allCDmg{
+    display: flex;
+    position: absolute;
+    bottom: 0px;
+    background-color: black;
+    width: 100%;
+    color: white;
+    height: 90px;
+    left:-8pxs
+}
+
+.cmdrDmgDelt{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    top: -44px;
+}
+.cmdrDmgDelt img{
+    height: auto;
+    width: 80px;
+    clip-path: circle(25px at 40px 36px);
+    position: relative;
+    top: 40px;
 }

@@ -14,31 +14,35 @@ export class CounterComponent implements OnInit {
  players: any =[];
  cmdrDmg:any = [];
  you: number = 0
+ roomNum: any;
+
+//  dealCMDas: any;
  
 
  
   ngOnInit(): void {
     this.you = this.data.you
-    console.log(this.data.players)
-    // if(this.you == undefined){
-    // this.data.addPlayer();
-    // }
+    // this.dealCMDas = this.you;
     this.players = this.data.players;
+    
     this.data.oPlayers.subscribe((data)=>{
      this.players= data
     })
-    // this.data.sendGameData();
-    // this.you = this.data.you
+    
     this.data.cmdrDmg.subscribe((data)=>{
       this.cmdrDmg= data
      })
-     
+     this.data.roomNum.subscribe((data: any)=>{
+       this.roomNum = data
+     })
     
   }
 
-  addPlayer(){
-    // this.data.addPlayer();
-    console.log(this.players)
+
+
+  changeSource(j:any){
+    console.log("change")
+    // this.dealCMDas = j
   }
 
   subtractLife(i: number){
@@ -49,17 +53,30 @@ export class CounterComponent implements OnInit {
     this.data.addLife(i);
   }
 
+
+  subtractPoison(i: number){
+    this.data.subPoison(i);
+  }
+
+  addPoison(i: number){
+    this.data.addPoison(i);
+  }
+
+
   startGame(){
     this.data.startGame();
     this.cmdrDmg=this.data.commanderDmg;
   }
 
-  addCmdrDmg(i: number, j: number){
-    this.data.addCmdr(i, j)
+  addCmdrDmg(i: number){
+    console.log(this.cmdrDmg[i][this.you])
+
+    this.data.addCmdr(i, this.you)
   }
 
-  subCmdrDmg(i: number, j: number){
-    this.data.subCmdr(i, j)
+  subCmdrDmg(i: number){
+    this.data.subCmdr(i, this.you)
+    
   }
 
 

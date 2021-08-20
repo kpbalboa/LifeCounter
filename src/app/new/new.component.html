@@ -9,11 +9,21 @@
 
     <label>name</label>
     <input type="text" required ngModel  #FirstName="ngModel" name="User">
-    <label>Commander</label>
-    <input type="text" required ngModel  #FirstName="ngModel" name="Commander">
     <label>Starting Life</label>
     <input type="number" required ngModel  #FirstName="ngModel" name="Life" value="40">
+    
+    <label>Commander</label>
+    <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
+
+           
+    <div *ngFor="let item of commanders; let i = index">
+        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
+    <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
+    </div>
+
 
 
     <button>Submit</button>
+
+    <button (click)="test()">test</button>
 </form>
