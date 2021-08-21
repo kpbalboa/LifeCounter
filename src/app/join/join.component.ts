@@ -29,11 +29,5 @@ commanders: any;
     });
   }
 
-  TestsearchCommander(){
-    let cmdr: any = {roomNum: document.getElementById("testChannel")}
-    // cmdr.roomNum = document.getElementById("testChannel")
-    this.data.joinRoom(cmdr, "this.commanders[num.value.Commander].name", "this.commanders[num.value.Commander].image_uris.small");
-    
-  }
-
+ 
 }

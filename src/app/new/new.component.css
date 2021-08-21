@@ -1,0 +1,33 @@
+H2{
+    text-align: center;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+   
+}
+form button{
+    margin-top: 20px;
+}
+label{
+    margin-top: 20px;
+}
+
+.cmdr label{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.cmdr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 45vw;
+    text-align: center;
+}
+
+.cmdrGrid{
+    display: grid;
+    grid-template-columns: auto auto;
+}

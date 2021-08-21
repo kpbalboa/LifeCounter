@@ -1,57 +1,77 @@
-
+<div class="header">
 <a routerLink="/home">back</a>
+<span>Turn: {{this.turnNumber}}</span>
 <span class="room">ROOM: {{this.roomNum}}</span>
-
+</div>
     <div *ngFor="let player of players; let i = index">
         <div  *ngIf="i !== this.you" class="player">
+            <div class="idBadge">
             <img src={{this.players[i].commanderImg}} alt="" class="playerImage">
     <span>{{this.players[i].Name}}</span>
+    </div>
     <!-- <span>{{this.players[i].Life}}</span> -->
-    <div class="buttons">
+    <div class="buttons" *ngIf="this.cmdrDmg.length !== 0; else orderBlock">
         <div>
     <button (click)="addLife(i)">Add</button>
     <span>{{this.players[i].Life}}</span>
     <button (click)="subtractLife(i)">sub</button>
 </div>
-<div>
-    <button (click)="addPoison(i)">Add</button>
-    <span>{{this.players[i].Poison}}</span>
-    <button (click)="subtractPoison(i)">sub</button>
-</div>
-
-    <div *ngIf="this.cmdrDmg.length !== 0">
+    <!-- <div *ngIf="this.cmdrDmg.length !== 0"> -->
+        <div>
         
-    <button (click)="addCmdrDmg(i)">Add</button>
+    <button (click)="addCmdrDmg(i, this.you)">Add</button>
     <span>{{this.cmdrDmg[i][this.you]}}</span>
-    <button (click)="subCmdrDmg(i)">sub</button>
+    <button (click)="subCmdrDmg(i, this.you)">sub</button>
     </div>
+    
     </div>
-  
+    <ng-template #orderBlock>
+        <!-- <div *ngIf="this.you == 0"><label for=`turnOrder`+{{i}}>turn order</label><select id=`turnOrder`+{{i}} name=`turnOrder`+{{i}}>
+        
+            <option *ngFor="let player of players; let p = index" class="p"+{{p+1}} value={{p+1}}>{{p+1}}</option>
+     
+    </select>
+</div> -->
+</ng-template>
+  <button (click)="seeMore(i)">See More</button>
 
-        <!-- <div class="cmdrDmg">
+        <div [id]="'cmdr' + i" class="cmdrDmg hidden">
+            <div>
+                <button (click)="addPoison(i)">Add</button>
+                <span>{{this.players[i].Poison}}</span>
+                <button (click)="subtractPoison(i)">sub</button>
+            </div>
     <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
-         <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)"> <span>{{dmg}}</span>
+        <div *ngIf="j !== this.you">
+         <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)"> <button (click)="addCmdrDmg(i, j)">add</button>
+         <span>{{dmg}}</span>
+         <button (click)="subCmdrDmg(i, j)">sub </button>
     </div>
-    <div class="CDButtons">
-    <button (click)="addCmdrDmg(i)">add</button>
-    <button (click)="subCmdrDmg(i)">sub </button>
     </div>
-    </div> -->
+    <button (click)="hide(i)">hide</button>
+</div>
 </div>
 </div>
 
-<div *ngIf="this.you == 0">
-<!-- <button (click)="addPlayer()">add player</button> -->
-<button (click)="startGame()">start game</button>
+<div *ngIf="this.you == 0 && this.cmdrDmg.length == 0" class="pregame">
+
+    <div class="turnOrder">
+<div *ngFor="let player of turnOrder; let i = index">
+    <button (click)="moveUp(i)">up</button><img src={{this.players[player].commanderImg}} alt=""><button (click)="moveDown(i)">down</button>
+</div>
+</div>
+<button (click)="startGame()">start game</button> 
 </div>
 
 <div class="you">
     <img src={{this.players[this.you].commanderImg}} alt="" class="youImg">
+    <div class="youInfo">
      <span>{{this.players[this.you].Name}}(you)</span>
     <span>Life: {{this.players[this.you].Life}}</span>
     <div class="buttons">
         <button (click)="addLife(this.you)">Add</button>
         <button (click)="subtractLife(this.you)">sub</button>
+        </div>
         </div>
         
         <div class="allCDmg">
@@ -59,5 +79,14 @@
             <img src={{this.players[i].commanderImg}} alt=""> <span>{{dmg}}</span>
         </div>
         </div>
-   
+</div>
+
+<label for="trigger">trigger</label>
+<input type="checkbox" name="trigger" id="trigger" (click)="toggleAlert()">
+
+<div *ngIf="this.cmdrDmg.length != 0">
+<div *ngIf="this.activeTurnOrder[this.activeTurn] == this.you">
+    <!-- <div> -->
+<button (click)="changeTurn()">Next Turn</button>
+</div>
 </div>

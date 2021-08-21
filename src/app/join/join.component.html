@@ -1,4 +1,4 @@
-<p>join works!</p>
+<H2>JOIN ROOM</H2>
 <form #joinForm="ngForm" (ngSubmit)='joinRoom(joinForm)'>
 
 
@@ -10,15 +10,14 @@
     <label>Commander</label>
     <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
 
-           
-    <div *ngFor="let item of commanders; let i = index">
+     <div class="cmdrGrid">    
+    <div *ngFor="let item of commanders; let i = index" class="cmdr">
         <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
     <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
     </div>
-
+</div>  
     <button>Submit</button>
 
-    <input type="text" id="testChannel"><button (click)="TestsearchCommander()">test</button>
 
 
 </form>

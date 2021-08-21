@@ -1,4 +1,4 @@
-.room{
+/* .room{
     top: 12px;
     right: 12px;
     position: absolute;
@@ -50,8 +50,6 @@
 .youImg{
     height: auto;
     width: 115%;
-    /* -webkit-clip-path: circle(300px at 15px 35px); */
-    /* clip-path: circle(70px at 120px 106px); */
     position: absolute;
     clip-path: inset(12% 7% 45% 8%);
     top: -27%;
@@ -111,4 +109,148 @@
     clip-path: circle(25px at 40px 36px);
     position: relative;
     top: 40px;
+} */
+.cmdrDmg{
+display: flex;
+}
+
+.hidden{
+    display: none;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.player{
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.idBadge{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 28px;
+    padding-top: 70px;
+    /* padding-right: 100px; */
+    padding-bottom: 5px;
+    align-items: center;
+}
+.buttons{display: flex;}
+
+.buttons div{
+    display: flex;
+    flex-direction: column;
+}
+
+.pregame{
+    display: flex;
+    flex-direction: column;
+}
+
+.turnOrder{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.you{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playerImage{
+    clip-path: circle(32px at 50px 48px);
+    width: 100px;
+    position: absolute;
+    top: -12px;
+}
+
+.turnOrder div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    height: 120px;
+    justify-content: space-between;
+    margin: 8px;
+    
+}
+
+.turnOrder img{
+    -webkit-clip-path: circle(32px at 50px 48px);
+    clip-path: circle(32px at 50px 48px);
+    width: 100px;
+    position: absolute;
+    top: 12px;
+}
+
+.you{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    /* padding: 65px; */
+    height: 58vw;
+    width: 100vw;
+    padding-top: 40px;
+}
+
+.youImg{
+    height: auto;
+    width: 113%;
+    position: absolute;
+    clip-path: inset(12% 7% 45% 8%);
+    top: -28%;
+    right: 52%;
+    transform: translate(50%);
+    z-index: -1;
+}
+.youInfo{
+   
+    background-color: rgba(255, 255, 255, 0.534);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90px;
+    justify-content: space-around;
+    width: 150px;
+
+
+}
+
+.cmdrDmgDelt img{
+    height: auto;
+    width: 100px;
+    clip-path: circle(31px at 50px 47px);
+    position: absolute;
+    top: 10px;
+    left: 0px;
+}
+
+.cmdrDmgDelt{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+}
+.allCDmg{
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    width: 100vw;
+    background-color: black;
+    color: white;
+}
+
+.cmdrDmg img{
+    clip-path: circle(32px at 50px 48px);
+    width: 100px;
+    position: absolute;
+    top: -12px;
 }

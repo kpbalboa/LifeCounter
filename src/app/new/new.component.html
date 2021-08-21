@@ -1,4 +1,4 @@
-<p>new works!</p>
+<h2>CREATE ROOM</h2>
 
 <!-- <button (click)="createRoom()">Create Room</button> -->
 
@@ -10,18 +10,22 @@
     <label>name</label>
     <input type="text" required ngModel  #FirstName="ngModel" name="User">
     <label>Starting Life</label>
-    <input type="number" required ngModel  #FirstName="ngModel" name="Life" value="40">
-    
+    <input type="number" required ngModel  #FirstName="ngModel" name="Life" value=40 autocomplete="off">
     <label>Commander</label>
     <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
 
            
-    <div *ngFor="let item of commanders; let i = index">
+    <!-- <div *ngFor="let item of commanders; let i = index">
         <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
     <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
     </div>
-
-
+ -->
+ <div class="cmdrGrid">    
+    <div *ngFor="let item of commanders; let i = index" class="cmdr">
+        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
+    <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
+    </div>
+</div>  
 
     <button>Submit</button>
 
