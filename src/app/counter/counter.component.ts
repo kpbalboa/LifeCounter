@@ -21,6 +21,8 @@ export class CounterComponent implements OnInit {
  activeTurn: number = 0;
  turnNumber: number = 1;
  alert :boolean = false;
+ endAlert: boolean = false;
+ dmgDlt: any= [];
 
 //  dealCMDas: any;
  
@@ -60,8 +62,16 @@ export class CounterComponent implements OnInit {
     this.data.turn.subscribe((res: any)=>{
       this.turnNumber = res;
     })
+    this.data.dmgDlt.subscribe((res: any)=>{
+      console.log(res)
+      this.dmgDlt = res;
+    })
     // this.activeTurn = 0;
     
+  }
+
+  toggleEndAlert(){
+    this.endAlert = !this.endAlert;
   }
 
 
@@ -133,8 +143,10 @@ export class CounterComponent implements OnInit {
   }
 
   changeTurn(){
+    if(this.endAlert){
+      window.alert("trigger warning");
+    }
     this.data.changeTurn();
-    console.log(this.activeTurnOrder, this.activeTurn)
     
   }
 

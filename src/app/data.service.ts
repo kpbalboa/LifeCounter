@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 import { HttpClient} from '@angular/common/http'
 import { LifecycleHooks } from '@angular/compiler/src/lifecycle_reflector';
+import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
 
 
 
@@ -47,17 +48,35 @@ export class DataService {
  
 // })
 
+
+
 this.socket.on("changeGame", data=>{
+
   if(data.change == "Life"){
     this.players[data.players].Life = this.players[data.players].Life+data.amount;
     this._oPlayers.next(this.players)
+if(data.players == this.you && data.dealtBy == this.you && data.amount >= 1){
+  this.localLifegain = this.localLifegain +data.amount;
+  this._lifeGain.next(this.localLifegain)
+  console.log("help")
+}else{
+  this.localdmgDlt[data.dealtBy][data.players] = this.localdmgDlt[data.dealtBy][data.players] - data.amount;
+  this._dmgDlt.next(this.localdmgDlt)
+  console.log("also help")
+}
+
+
   }else if(data.change == "Poison"){
     this.players[data.players].Poison = this.players[data.players].Poison+data.amount;
     this._oPlayers.next(this.players)
+    this.localdmgDlt[data.dealtBy][data.players] = this.localdmgDlt[data.dealtBy][data.players] + data.amount;
+  this._dmgDlt.next(this.localdmgDlt)
   }else if(data.change == "CMDR"){
     this.commanderDmg[data.i][data.j] = this.commanderDmg[data.i][data.j]+data.amount;
     this._cmdrDmg.next(this.commanderDmg)
   }else if(data.change == "start"){
+    this.localdmgDlt = data.cmdrdmg;
+    this._dmgDlt.next(data.cmdrdmg)
     this.updatecmdr(data)
     this.updateTurnOrder(data)
     this.lturn = 1;
@@ -79,6 +98,7 @@ this.socket.on("changeGame", data=>{
 
  this.socket.on("startGame", data=>{
    this.updatecmdr(data)
+   this.updatePlayerDmg(data);
  })
 
  this.socket.on("NewRoom", data=>{
@@ -117,6 +137,12 @@ activeTurn = this._activeTurn.asObservable();
 _turn: Subject<any> = new Subject<[]>();
 turn = this._turn.asObservable();
 
+_dmgDlt: Subject<any> = new Subject<[]>();
+dmgDlt = this._dmgDlt.asObservable();
+
+_lifeGain: Subject<any> = new Subject<[]>();
+lifeGain = this._lifeGain.asObservable();
+
 players: any = [];
 lactiveTurn: any;
 lturn: any;
@@ -124,6 +150,8 @@ lturnOrder: any;
 commanderDmg: any = [];
 you:any;
 roomNumber: any;
+localdmgDlt: any;
+localLifegain: number = 0;
 
 getCommander(search: any){
   return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+is%3Acommander`));
@@ -161,8 +189,13 @@ updatePlayers(data: any){
 }
 
 updatecmdr(data: any){
+
   this.commanderDmg = data.cmdrdmg;
   this._cmdrDmg.next(data.cmdrdmg)
+}
+
+updatePlayerDmg(data: any){
+  this.localdmgDlt = data.cmdrdmg
 }
 
 updateTurnOrder(data: any){
@@ -214,19 +247,19 @@ this.sendGameData();
   
 
 subLife(i: number){
-  this.socket.emit('changeGame', {change: "Life", players : i, amount: -1, roomNumber : this.roomNumber});
+  this.socket.emit('changeGame', {change: "Life", players : i, dealtBy: this.you, amount: -1, roomNumber : this.roomNumber});
 }
 
 addLife(i: number){
-  this.socket.emit('changeGame', {change: "Life", players : i, amount: +1, roomNumber : this.roomNumber});
+  this.socket.emit('changeGame', {change: "Life", players : i,  dealtBy: this.you, amount: +1, roomNumber : this.roomNumber});
 }
 
 subPoison(i: number){
-  this.socket.emit('changeGame', {change: "Poison", players : i, amount: -1, roomNumber : this.roomNumber});
+  this.socket.emit('changeGame', {change: "Poison", players : i,  dealtBy: this.you, amount: -1, roomNumber : this.roomNumber});
 }
 
 addPoison(i: number){
-  this.socket.emit('changeGame', {change: "Poison", players : i, amount: +1, roomNumber : this.roomNumber});
+  this.socket.emit('changeGame', {change: "Poison", players : i,  dealtBy: this.you, amount: +1, roomNumber : this.roomNumber});
 }
 
 addCmdr(i: number, j:number){

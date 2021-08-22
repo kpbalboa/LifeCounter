@@ -23,7 +23,7 @@
     <span>{{this.cmdrDmg[i][this.you]}}</span>
     <button (click)="subCmdrDmg(i, this.you)">sub</button>
     </div>
-    
+    <button (click)="seeMore(i)">See More</button>
     </div>
     <ng-template #orderBlock>
         <!-- <div *ngIf="this.you == 0"><label for=`turnOrder`+{{i}}>turn order</label><select id=`turnOrder`+{{i}} name=`turnOrder`+{{i}}>
@@ -33,16 +33,17 @@
     </select>
 </div> -->
 </ng-template>
-  <button (click)="seeMore(i)">See More</button>
+  <!-- <button (click)="seeMore(i)">See More</button> -->
 
         <div [id]="'cmdr' + i" class="cmdrDmg hidden">
-            <div>
+            <div class="poison">
                 <button (click)="addPoison(i)">Add</button>
                 <span>{{this.players[i].Poison}}</span>
                 <button (click)="subtractPoison(i)">sub</button>
+                <img src="../../assets/poison.png" alt="">
             </div>
     <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
-        <div *ngIf="j !== this.you">
+        <div *ngIf="j !== this.you" class="commander">
          <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)"> <button (click)="addCmdrDmg(i, j)">add</button>
          <span>{{dmg}}</span>
          <button (click)="subCmdrDmg(i, j)">sub </button>
@@ -80,13 +81,30 @@
         </div>
         </div>
 </div>
-
-<label for="trigger">trigger</label>
+<div class="footer">
+    <div class="triggers">
+<label for="trigger">Upkeep</label>
 <input type="checkbox" name="trigger" id="trigger" (click)="toggleAlert()">
+</div>
+
+<div class="triggers">
+    <label for="endTrigger">Endstep</label>
+    <input type="checkbox" name="trigger" id="endTrigger" (click)="toggleEndAlert()">
+    </div>
 
 <div *ngIf="this.cmdrDmg.length != 0">
 <div *ngIf="this.activeTurnOrder[this.activeTurn] == this.you">
-    <!-- <div> -->
 <button (click)="changeTurn()">Next Turn</button>
 </div>
 </div>
+</div>
+
+<div *ngFor="let dmg of dmgDlt; let i = index" class="flexRow">
+    <span>{{this.players[i].Name}}</span>
+    <div *ngFor="let dmgD of dmgDlt[i]; let j = index" class="flexcolumn">
+        <span>{{this.players[j].Name}}</span>
+        <span>{{dmgDlt[i][j]}}</span>
+    </div>
+    <!-- <span>hello</span> -->
+</div>
+

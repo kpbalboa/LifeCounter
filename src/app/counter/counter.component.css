@@ -111,7 +111,18 @@
     top: 40px;
 } */
 .cmdrDmg{
-display: flex;
+    position: absolute;
+    background-color: black;
+    height: 160px;
+    top: 0px;
+    width: 105%;
+    left: -8px;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    z-index: 2;
+    color: white;
+    justify-items: center;
 }
 
 .hidden{
@@ -139,7 +150,11 @@ display: flex;
     padding-bottom: 5px;
     align-items: center;
 }
-.buttons{display: flex;}
+.buttons{ 
+       display: flex;
+    justify-content: space-evenly;
+    width: 80%;
+}
 
 .buttons div{
     display: flex;
@@ -193,23 +208,27 @@ display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    position: relative;
-    /* padding: 65px; */
+    /* position: relative; */
     height: 58vw;
     width: 100vw;
     padding-top: 40px;
+    position: absolute;
+    bottom: 50px;
+    left: 0;
 }
 
 .youImg{
     height: auto;
-    width: 113%;
+    width: 119%;
     position: absolute;
+    -webkit-clip-path: inset(12% 7% 45% 8%);
     clip-path: inset(12% 7% 45% 8%);
     top: -28%;
-    right: 52%;
+    right: 50%;
     transform: translate(50%);
     z-index: -1;
 }
+
 .youInfo{
    
     background-color: rgba(255, 255, 255, 0.534);
@@ -249,8 +268,50 @@ display: flex;
 }
 
 .cmdrDmg img{
-    clip-path: circle(32px at 50px 48px);
-    width: 100px;
+    clip-path: circle(21px at 35px 33px);
+    width: 70px;
     position: absolute;
-    top: -12px;
+    top: 10px;
+    left: 6px;
+}
+
+.commander{
+    position: relative;
+}
+.poison{
+    position: relative;
+}
+.poison{
+    position: relative;
+}
+.poison img{
+    left: 35px;
+}
+.footer{
+    display: flex;
+    background-color: black;
+    color: white;
+    justify-content: space-around;
+    width: 100vw;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    height: 50px;
+    align-items: center;
+}
+
+.triggers{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.flexcolumn{
+    display: flex;
+    flex-direction: column;
+}
+
+.flexRow{
+    display: flex;
 }
