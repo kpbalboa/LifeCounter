@@ -58,7 +58,7 @@ this.socket.on("changeGame", data=>{
 if(data.players == this.you && data.dealtBy == this.you && data.amount >= 1){
   this.localLifegain = this.localLifegain +data.amount;
   this._lifeGain.next(this.localLifegain)
-  console.log("help")
+
 }else{
   this.localdmgDlt[data.dealtBy][data.players] = this.localdmgDlt[data.dealtBy][data.players] - data.amount;
   this._dmgDlt.next(this.localdmgDlt)
@@ -75,8 +75,16 @@ if(data.players == this.you && data.dealtBy == this.you && data.amount >= 1){
     this.commanderDmg[data.i][data.j] = this.commanderDmg[data.i][data.j]+data.amount;
     this._cmdrDmg.next(this.commanderDmg)
   }else if(data.change == "start"){
-    this.localdmgDlt = data.cmdrdmg;
-    this._dmgDlt.next(data.cmdrdmg)
+    console.log(data)
+    // for(var i=0; i<this.players.length; i++) {
+    //   this.localdmgDlt[i] = [];
+    //   for(var j=0; j<this.players.length; j++) {
+    //     this.localdmgDlt[i][j] = 0;
+    //   }
+    // }
+    // console.log(this.localdmgDlt)
+    this.localdmgDlt = data.playerDmg;
+    this._dmgDlt.next(this.localdmgDlt)
     this.updatecmdr(data)
     this.updateTurnOrder(data)
     this.lturn = 1;
@@ -152,6 +160,7 @@ you:any;
 roomNumber: any;
 localdmgDlt: any;
 localLifegain: number = 0;
+lifeGained: number = 0
 
 getCommander(search: any){
   return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+is%3Acommander`));
@@ -252,6 +261,9 @@ subLife(i: number){
 
 addLife(i: number){
   this.socket.emit('changeGame', {change: "Life", players : i,  dealtBy: this.you, amount: +1, roomNumber : this.roomNumber});
+  if(i == this.you){
+    this.lifeGained++;
+  }
 }
 
 subPoison(i: number){
@@ -298,7 +310,7 @@ startGame(turnOrder: any){
         this.commanderDmg[i][j] = 0;
     }
   }
-  this.socket.emit('changeGame', {change: "start", cmdrdmg: this.commanderDmg, turnOrder: turnOrder, roomNumber : this.roomNumber});
+  this.socket.emit('changeGame', {change: "start", cmdrdmg: this.commanderDmg, playerDmg : this.commanderDmg, turnOrder: turnOrder, roomNumber : this.roomNumber});
   }
 
 

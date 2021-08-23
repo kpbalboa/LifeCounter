@@ -23,6 +23,8 @@ export class CounterComponent implements OnInit {
  alert :boolean = false;
  endAlert: boolean = false;
  dmgDlt: any= [];
+ lifeGained: any;
+ commanders:any
 
 //  dealCMDas: any;
  
@@ -66,14 +68,37 @@ export class CounterComponent implements OnInit {
       console.log(res)
       this.dmgDlt = res;
     })
+    this.data.lifeGain.subscribe((res: any)=>{
+      this.lifeGained = res;
+    })
     // this.activeTurn = 0;
     
+  }
+
+  searchCommander(){
+    let cmdr: any = document.getElementById("commanderSearch")
+    this.data.getCommander(cmdr.value).subscribe((res: any) =>{
+      console.log(res)
+      this.commanders = res.data;
+    });
+  }
+
+  changeCommander(form: any){
+    
+   console.log(form.value)
   }
 
   toggleEndAlert(){
     this.endAlert = !this.endAlert;
   }
 
+  toggleOptions(){
+    document.getElementById("extraOptions")?.classList.remove("hidden")
+  }
+
+  hideOptions(){
+    document.getElementById("extraOptions")?.classList.add("hidden")
+  }
 
   seeMore(i: any){
     let item: any = document.getElementById("cmdr"+i)
@@ -111,6 +136,9 @@ export class CounterComponent implements OnInit {
 
   addLife(i: number){
     this.data.addLife(i);
+    // if(i = this.you){
+    //   this.lifeGained ++;
+    // }
   }
 
 

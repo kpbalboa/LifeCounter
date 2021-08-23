@@ -97,14 +97,52 @@
 <button (click)="changeTurn()">Next Turn</button>
 </div>
 </div>
+<span (click)="toggleOptions()">Options</span>
+</div>
+<div id="extraOptions" class="hidden">
+    <span (click)="hideOptions()">BACK</span>
+<Table>
+    <tr>
+        <td></td>
+        <th *ngFor="let player of players; let i = index">
+            {{player.Name}}
+        </th>
+    </tr>
+<tr *ngFor="let dmg of dmgDlt; let i = index">
+    <th>{{this.players[i].Name}}</th>
+    <td *ngFor="let dmgD of dmgDlt[i]; let j = index">
+        <span>{{dmgDlt[i][j]}}</span>
+    </td>
+    <!-- <span>hello</span> -->
+</tr>
+</Table>
+<div>
+<span>Life Gained:</span>
+<br>
+<span>{{this.lifeGained}}</span>
 </div>
 
-<div *ngFor="let dmg of dmgDlt; let i = index" class="flexRow">
-    <span>{{this.players[i].Name}}</span>
-    <div *ngFor="let dmgD of dmgDlt[i]; let j = index" class="flexcolumn">
-        <span>{{this.players[j].Name}}</span>
-        <span>{{dmgDlt[i][j]}}</span>
+<div>
+<label for="canDie">Platinum Angel</label>
+<input type="checkbox" name="canDie" id="canDie" (click)="toggleAlert()">
+</div>
+
+<form #changeCMDR="ngForm" (ngSubmit)='changeCommander(changeCMDR)'>
+
+    <label>Commander</label>
+    <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
+
+     <div class="cmdrGrid">    
+    <div *ngFor="let item of commanders; let i = index" class="cmdr">
+        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
+    <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
     </div>
-    <!-- <span>hello</span> -->
+</div>  
+    <button>Submit</button>
+</form>
+
+
+
+<a routerLink="/home">quit</a>
 </div>
 
