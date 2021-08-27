@@ -1,4 +1,15 @@
 <h1>Life Counter</h1>
+<div *ngIf="this.userName == undefined; else userBlock" class="log">
+    <a routerLink="newUser">CREATE ACCOUNT</a>
+    <a routerLink="login">LOGIN</a>
+</div>
+<ng-template #userBlock>
+    <div class="loggedTrue">
+    <span>LOGGED IN AS: {{userName}}</span>
+    <button (click)="LogOut()">Log Out</button>
+    </div>
+</ng-template>
+
 <div class="options">
 <a routerLink="newGame">CREATE ROOM</a>
 <a routerLink="join">JOIN ROOM</a>

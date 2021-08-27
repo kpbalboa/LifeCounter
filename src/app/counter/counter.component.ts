@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 
 import { DataService } from '../data.service';
 
@@ -25,8 +25,112 @@ export class CounterComponent implements OnInit {
  dmgDlt: any= [];
  lifeGained: any;
  commanders:any
+ dead: boolean = false;
+ damageIndex: any;
+ damageType: any;
+ calcJ: any;
 
-//  dealCMDas: any;
+
+
+  input:string = '';
+  result:string = '';
+  
+
+
+subGame(){
+  this.data.SubGameData();
+}
+
+ 
+  pressNum(num: string) {
+    
+    //Do Not Allow . more than once
+    if (num==".") {
+      if (this.input !="" ) {
+ 
+        const lastNum=this.getLastOperand()
+        console.log(lastNum.lastIndexOf("."))
+        if (lastNum.lastIndexOf(".") >= 0) return;
+      }
+    }
+ 
+    //Do Not Allow 0 at beginning. 
+    //Javascript will throw Octal literals are not allowed in strict mode.
+    if (num=="0") {
+      if (this.input=="" ) {
+        return;
+      }
+      const PrevKey = this.input[this.input.length - 1];
+      if (PrevKey === '/' || PrevKey === '*' || PrevKey === '-' || PrevKey === '+')  {
+          return;
+      }
+    }
+ 
+    this.input = this.input + num
+    this.calcAnswer();
+  }
+ 
+ 
+  getLastOperand() {
+    let pos:number;
+    console.log(this.input)
+    pos=this.input.toString().lastIndexOf("+")
+    if (this.input.toString().lastIndexOf("-") > pos) pos=this.input.lastIndexOf("-")
+    if (this.input.toString().lastIndexOf("*") > pos) pos=this.input.lastIndexOf("*")
+    if (this.input.toString().lastIndexOf("/") > pos) pos=this.input.lastIndexOf("/")
+    console.log('Last '+this.input.substr(pos+1))
+    return this.input.substr(pos+1)
+  }
+ 
+ 
+  pressOperator(op: string) {
+ 
+    //Do not allow operators more than once
+    const lastKey = this.input[this.input.length - 1];
+    if (lastKey === '/' || lastKey === '*' || lastKey === '-' || lastKey === '+')  {
+      return;
+    }
+   
+    this.input = this.input + op
+    this.calcAnswer();
+  }
+ 
+ 
+  clear() {
+    if (this.input !="" ) {
+      this.input=this.input.substr(0, this.input.length-1)
+    }
+  }
+ 
+  allClear() {
+    this.result = '';
+    this.input = '';
+  }
+ 
+  calcAnswer() {
+    let formula = this.input;
+ 
+    let lastKey = formula[formula.length - 1];
+ 
+    if (lastKey === '.')  {
+      formula=formula.substr(0,formula.length - 1);
+    }
+ 
+    lastKey = formula[formula.length - 1];
+ 
+    if (lastKey === '/' || lastKey === '*' || lastKey === '-' || lastKey === '+' || lastKey === '.')  {
+      formula=formula.substr(0,formula.length - 1);
+    }
+ 
+    console.log("Formula " +formula);
+    this.result = eval(formula);
+  }
+ 
+  getAnswer() {
+    this.calcAnswer();
+    this.input = this.result;
+    if (this.input=="0") this.input="";
+  }
  
 
  
@@ -48,7 +152,6 @@ export class CounterComponent implements OnInit {
       this.cmdrDmg= data
      })
      this.data.roomNum.subscribe((data: any)=>{
-       console.log(data)
        this.roomNum = data
      })
      this.data.turnOrder.subscribe((res: any)=>{
@@ -65,13 +168,15 @@ export class CounterComponent implements OnInit {
       this.turnNumber = res;
     })
     this.data.dmgDlt.subscribe((res: any)=>{
-      console.log(res)
       this.dmgDlt = res;
     })
     this.data.lifeGain.subscribe((res: any)=>{
       this.lifeGained = res;
     })
     // this.activeTurn = 0;
+    this.data.isDead.subscribe((res: boolean)=>{
+      this.dead = res;
+    })
     
   }
 
@@ -95,6 +200,41 @@ export class CounterComponent implements OnInit {
   toggleOptions(){
     document.getElementById("extraOptions")?.classList.remove("hidden")
   }
+
+
+  toggleDammage(i: number, type: string, j: any){
+    this.damageType = type;
+    this.damageIndex = i;
+    this.calcJ= j;
+    document.getElementById("damageCalc")?.classList.remove("hidden")
+  }
+
+  hideDammage(){
+    this.damageType = undefined;
+    this.damageIndex = undefined;
+    this.calcJ = undefined
+    this.result = ''
+    this.input = ''
+    document.getElementById("damageCalc")?.classList.add("hidden")
+  }
+
+  submitDammage(){
+if(this.damageType == "damage"){
+this.subtractLife(this.damageIndex, Number(this.result))
+}else if(this.damageType == "poison"){
+  this.addPoison(this.damageIndex, Number(this.result))
+  } else if(this.damageType == "commander"){
+    this.addCmdrDmg(this.damageIndex, this.calcJ, Number(this.result))
+    }
+
+    this.damageType = undefined;
+    this.damageIndex = undefined;
+    this.calcJ = undefined
+    this.result = ''
+    this.input = ''
+    document.getElementById("damageCalc")?.classList.add("hidden")
+  }
+
 
   hideOptions(){
     document.getElementById("extraOptions")?.classList.add("hidden")
@@ -130,24 +270,24 @@ export class CounterComponent implements OnInit {
     // this.dealCMDas = j
   }
 
-  subtractLife(i: number){
-    this.data.subLife(i);
+  subtractLife(i: number, amount: number){
+    this.data.subLife(i, amount);
   }
 
-  addLife(i: number){
-    this.data.addLife(i);
+  addLife(i: number, amount: number){
+    this.data.addLife(i, amount);
     // if(i = this.you){
     //   this.lifeGained ++;
     // }
   }
 
 
-  subtractPoison(i: number){
-    this.data.subPoison(i);
+  subtractPoison(i: number, amount: number){
+    this.data.subPoison(i, amount);
   }
 
-  addPoison(i: number){
-    this.data.addPoison(i);
+  addPoison(i: number, amount: number){
+    this.data.addPoison(i, amount);
   }
 
 
@@ -160,13 +300,13 @@ export class CounterComponent implements OnInit {
   }
   
 
-  addCmdrDmg(i: number, j: number){
+  addCmdrDmg(i: number, j: number, amount: number){
 
-    this.data.addCmdr(i, j)
+    this.data.addCmdr(i, j, amount)
   }
 
-  subCmdrDmg(i: number, j: number){
-    this.data.subCmdr(i, j)
+  subCmdrDmg(i: number, j: number, amount: number){
+    this.data.subCmdr(i, j, amount)
     
   }
 
@@ -178,5 +318,8 @@ export class CounterComponent implements OnInit {
     
   }
 
+  quit(){
+    this.data.reset();
+  }
 
 }

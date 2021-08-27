@@ -1,12 +1,15 @@
 export class Player {
-        private Name: string;
+        // private userName: any;
+        private Name: any;
         private Commander: string;
+        private loggedin: boolean
         private Poison: number;
         private Life: number;
         private commanderImg: string;
-        constructor(Name: string, Commander: string, commanderImg: string, Life: number) {
+        constructor(Name: any, Commander: string, commanderImg: string, Life: number, logged: any) {
           this.Poison = 0;
-          this.Name = Name
+          this.Name = Name;
+          this.loggedin = logged;
           this.Life = Life
           this.Commander = Commander
           this.commanderImg = commanderImg

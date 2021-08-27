@@ -11,12 +11,17 @@ export class NewComponent implements OnInit {
   constructor(private data: DataService) { }
 
   commanders: any;
+  userName: any;
 
   ngOnInit(): void {
+    this.userName = this.data.userName;
   }
 createRoom(form: any){
-  // console.log(form.value)
+  if(this.commanders[form.value.Commander].image_uris != undefined){
  this.data.createRoom(form.value, this.commanders[form.value.Commander].name, this.commanders[form.value.Commander].image_uris.small);
+  }else{
+    this.data.createRoom(form.value, this.commanders[form.value.Commander].name, this.commanders[form.value.Commander].card_faces[0].image_uris.small);
+  }
 }
 
 test(){
@@ -27,7 +32,6 @@ test(){
 searchCommander(){
   let cmdr: any = document.getElementById("commanderSearch")
   this.data.getCommander(cmdr.value).subscribe((res: any) =>{
-    console.log(res)
     this.commanders = res.data;
   });
 }

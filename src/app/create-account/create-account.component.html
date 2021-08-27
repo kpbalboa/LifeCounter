@@ -1,0 +1,26 @@
+<div id="createForm">
+<div id="alert" *ngFor="let error of alerts; let i = index">
+    {{error}}
+</div>
+
+<form #joinForm="ngForm" (ngSubmit)='createAccount(joinForm)'>
+
+
+    <label>User Name:</label>
+    <input type="text" required ngModel  #FirstName="ngModel" name="User" onkeypress="return event.charCode != 32" minlength="4" maxlength="10">
+    <label>Email:</label>
+    <input type="email" required ngModel  name="Email" onkeypress="return event.charCode != 32">
+    <label>Password:</label>
+    <input type="password" required ngModel   name="Password" onkeypress="return event.charCode != 32" minlength="6" maxlength="14">
+    <label>Confirm:</label>
+    <input type="password" required ngModel   name="PasswordConfirm" onkeypress="return event.charCode != 32">
+
+
+
+ 
+
+    <button>Submit</button>
+
+</form>
+
+</div>

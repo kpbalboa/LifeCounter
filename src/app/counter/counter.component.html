@@ -1,8 +1,8 @@
 <div class="header">
-<a routerLink="/home">back</a>
 <span>Turn: {{this.turnNumber}}</span>
 <span class="room">ROOM: {{this.roomNum}}</span>
 </div>
+<div *ngIf="this.cmdrDmg.length != 0;" class="allOpps">
     <div *ngFor="let player of players; let i = index">
         <div  *ngIf="i !== this.you" class="player">
             <div class="idBadge">
@@ -12,53 +12,57 @@
     <!-- <span>{{this.players[i].Life}}</span> -->
     <div class="buttons" *ngIf="this.cmdrDmg.length !== 0; else orderBlock">
         <div>
-    <button (click)="addLife(i)">Add</button>
-    <span>{{this.players[i].Life}}</span>
-    <button (click)="subtractLife(i)">sub</button>
+    <button (click)="addLife(i, 1)">Add</button>
+    <span (click)="toggleDammage(i, 'damage', undefined)">♥{{this.players[i].Life}}</span>
+    <button (click)="subtractLife(i, 1)">sub</button>
 </div>
     <!-- <div *ngIf="this.cmdrDmg.length !== 0"> -->
         <div>
         
-    <button (click)="addCmdrDmg(i, this.you)">Add</button>
-    <span>{{this.cmdrDmg[i][this.you]}}</span>
-    <button (click)="subCmdrDmg(i, this.you)">sub</button>
+    <button (click)="addCmdrDmg(i, this.you, 1)">Add</button>
+    <span (click)="toggleDammage(i, 'commander', this.you)">{{this.cmdrDmg[i][this.you]}}</span>
+    <button (click)="subCmdrDmg(i, this.you, 1)">sub</button>
     </div>
     <button (click)="seeMore(i)">See More</button>
     </div>
     <ng-template #orderBlock>
-        <!-- <div *ngIf="this.you == 0"><label for=`turnOrder`+{{i}}>turn order</label><select id=`turnOrder`+{{i}} name=`turnOrder`+{{i}}>
-        
-            <option *ngFor="let player of players; let p = index" class="p"+{{p+1}} value={{p+1}}>{{p+1}}</option>
-     
-    </select>
-</div> -->
+      
 </ng-template>
-  <!-- <button (click)="seeMore(i)">See More</button> -->
+
 
         <div [id]="'cmdr' + i" class="cmdrDmg hidden">
             <div class="poison">
-                <button (click)="addPoison(i)">Add</button>
+                <button (click)="addPoison(i, 1)">Add</button>
                 <span>{{this.players[i].Poison}}</span>
-                <button (click)="subtractPoison(i)">sub</button>
-                <img src="../../assets/poison.png" alt="">
+                <button (click)="subtractPoison(i, 1)">sub</button>
+                <img src="../../assets/poison.png" alt="" (click)="toggleDammage(i, 'poison', undefined)">
             </div>
     <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
         <div *ngIf="j !== this.you" class="commander">
-         <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)"> <button (click)="addCmdrDmg(i, j)">add</button>
+         <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)" (click)="toggleDammage(i, 'commander', j)"> <button (click)="addCmdrDmg(i, j, 1)">add</button>
          <span>{{dmg}}</span>
-         <button (click)="subCmdrDmg(i, j)">sub </button>
+         <button (click)="subCmdrDmg(i, j, 1)">sub </button>
     </div>
     </div>
     <button (click)="hide(i)">hide</button>
 </div>
 </div>
 </div>
+</div>
+
+
 
 <div *ngIf="this.you == 0 && this.cmdrDmg.length == 0" class="pregame">
 
+    <span>Turn Order</span>
     <div class="turnOrder">
 <div *ngFor="let player of turnOrder; let i = index">
-    <button (click)="moveUp(i)">up</button><img src={{this.players[player].commanderImg}} alt=""><button (click)="moveDown(i)">down</button>
+    <button (click)="moveUp(i)">up</button>
+    <div class="idBadge">
+    <img src={{this.players[player].commanderImg}} alt="">
+    <span>{{this.players[i].Name}}</span>
+    </div>
+    <button (click)="moveDown(i)">down</button>
 </div>
 </div>
 <button (click)="startGame()">start game</button> 
@@ -67,13 +71,17 @@
 <div class="you">
     <img src={{this.players[this.you].commanderImg}} alt="" class="youImg">
     <div class="youInfo">
-     <span>{{this.players[this.you].Name}}(you)</span>
-    <span>Life: {{this.players[this.you].Life}}</span>
+     <span *ngIf="!this.dead; else deadBlock">{{this.players[this.you].Name}}(you)</span>
+    
     <div class="buttons">
-        <button (click)="addLife(this.you)">Add</button>
-        <button (click)="subtractLife(this.you)">sub</button>
+        <button (click)="addLife(this.you, 1)">Add</button>
+        <span (click)="toggleDammage(this.you, 'damage', undefined)">♥ {{this.players[this.you].Life}}</span>
+        <button (click)="subtractLife(this.you, 1)">sub</button>
         </div>
         </div>
+        <ng-template #deadBlock>
+      ☠
+        </ng-template>
         
         <div class="allCDmg">
         <div *ngFor="let dmg of cmdrDmg[this.you]; let i = index" class="cmdrDmgDelt">
@@ -105,15 +113,14 @@
     <tr>
         <td></td>
         <th *ngFor="let player of players; let i = index">
-            {{player.Name}}
+            {{player.Name.substring(0, 5)}}
         </th>
     </tr>
 <tr *ngFor="let dmg of dmgDlt; let i = index">
-    <th>{{this.players[i].Name}}</th>
+    <th>{{this.players[i].Name.substring(0, 6)}}</th>
     <td *ngFor="let dmgD of dmgDlt[i]; let j = index">
         <span>{{dmgDlt[i][j]}}</span>
     </td>
-    <!-- <span>hello</span> -->
 </tr>
 </Table>
 <div>
@@ -127,7 +134,7 @@
 <input type="checkbox" name="canDie" id="canDie" (click)="toggleAlert()">
 </div>
 
-<form #changeCMDR="ngForm" (ngSubmit)='changeCommander(changeCMDR)'>
+<!-- <form #changeCMDR="ngForm" (ngSubmit)='changeCommander(changeCMDR)'>
 
     <label>Commander</label>
     <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
@@ -139,10 +146,66 @@
     </div>
 </div>  
     <button>Submit</button>
-</form>
+</form> -->
+<div *ngIf="dead">
+<button (click)="subGame()">Submit Game And Quit</button>
+</div>
+<br>
 
-
-
-<a routerLink="/home">quit</a>
+<button (click)="quit()">Quit</button>
 </div>
 
+<div id="damageCalc" class="hidden">
+
+    <div *ngIf="damageIndex !== undefined;" class="calcHead">
+    <button (click) ="hideDammage()">BACK</button>
+    <span>{{this.players[this.damageIndex].Name}} {{this.damageType}} Calculator</span>
+</div>
+  
+<div class="calc">
+
+<div class="math">
+    <div class="col-sm-12 form-control text-lg-right" type="text">{{input}}</div>
+  </div>
+
+  //Displays the Results
+  <div class="math">
+    <div class="form-control text-sm-right" type="text">{{result}}</div>
+  </div>
+
+ <div class="calcButtons">
+    <button class="btn btn-info col-sm-6" type="button" (click)="allClear()">C</button>
+    <button class="btn btn-warning col-sm-3" type="button" (click)="clear()">U</button>
+    <div></div>
+    <button class="btn btn-secondary col-sm-3" type="button" (click)="pressOperator('/')">/</button>
+ 
+
+ 
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('7')">7</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('8')">8</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('9')">9</button>
+    <button class="btn btn-lg btn-secondary col-sm-3 p-1" type="button" (click)="pressOperator('*')">X</button>
+  
+ 
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('4')">4</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('5')">5</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('6')">6</button>
+    <button class="btn btn-lg btn-secondary col-sm-3 p-1" type="button" (click)="pressOperator('-')">-</button>
+  
+ 
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('1')">1</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('2')">2</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('3')">3</button>
+    <button class="btn btn-lg btn-secondary col-sm-3 p-1" type="button" (click)="pressOperator('+')">+</button>
+  
+ 
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('.')">.</button>
+    <button class="btn btn-lg btn-outline-secondary col-sm-3 p-1" type="button" (click)="pressNum('0')">0</button>
+    <button class="btn btn-lg btn-success col-sm-6 p-1" type="button" (click)="getAnswer()">=</button>
+    </div>
+
+    <button (click)="submitDammage()" class="submitCalc">Enter</button>
+</div>
+    
+
+    </div>

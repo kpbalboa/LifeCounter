@@ -6,8 +6,7 @@ import { io, Socket } from 'socket.io-client'
 import { Router } from '@angular/router';
 
 import { HttpClient} from '@angular/common/http'
-import { LifecycleHooks } from '@angular/compiler/src/lifecycle_reflector';
-import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
+
 
 
 
@@ -19,12 +18,11 @@ export class DataService {
 
 
   constructor( private router: Router, private http: HttpClient ) { 
-    // this.socket = io('http://localhost:3000');
-    this.socket = io('http://192.168.1.47:3000');
+    this.socket = io('http://localhost:3000');
+    // this.socket = io('http://192.168.1.47:3000');
     // this.socket = io('http://140.82.114.4:3000');
     this.socket.on('get data', data =>{
       this.updatePlayers(data.players);
-     
       if(this.you == undefined){
         
         this.you=data.players.length-1
@@ -32,57 +30,80 @@ export class DataService {
       }
    })
 
-//    this.socket.on('changeLife', data =>{
-//      this.players[data.players].Life = this.players[data.players].Life+data.amount;
-//      this._oPlayers.next(this.players)
-//  })
-
-//  this.socket.on('changePoison', data =>{
-//   this.players[data.players].Poison = this.players[data.players].Poison+data.amount;
-//   this._oPlayers.next(this.players)
-// })
-
-//  this.socket.on('change CDMG', data =>{
-//   this.commanderDmg[data.i][data.j] = this.commanderDmg[data.i][data.j]+data.amount;
-//   this._cmdrDmg.next(this.commanderDmg)
  
-// })
 
 
 
 this.socket.on("changeGame", data=>{
 
+  let cmdrdmgCheck;
+if (this.dead){
+  this.commanderDmg[this.you].forEach((element: any) => {
+    if(element >= 21){
+      cmdrdmgCheck = false;
+    }
+  });
+}
+if (cmdrdmgCheck == undefined){
+  cmdrdmgCheck = true;
+}
+
   if(data.change == "Life"){
     this.players[data.players].Life = this.players[data.players].Life+data.amount;
     this._oPlayers.next(this.players)
-if(data.players == this.you && data.dealtBy == this.you && data.amount >= 1){
-  this.localLifegain = this.localLifegain +data.amount;
-  this._lifeGain.next(this.localLifegain)
+    if(data.players == this.you && data.dealtBy == this.you && data.amount >= 1){
+    this.localLifegain = this.localLifegain +data.amount;
+   this._lifeGain.next(this.localLifegain)
 
-}else{
-  this.localdmgDlt[data.dealtBy][data.players] = this.localdmgDlt[data.dealtBy][data.players] - data.amount;
-  this._dmgDlt.next(this.localdmgDlt)
-  console.log("also help")
+    }else{
+    this.localdmgDlt[data.dealtBy][data.players] = this.localdmgDlt[data.dealtBy][data.players] - data.amount;
+    this._dmgDlt.next(this.localdmgDlt)
 }
 
+//
+// let cmdrdmgCheck;
+// if (this.dead){
+//   this.commanderDmg[this.you].forEach((element: any) => {
+//     if(element >= 21){
+//       cmdrdmgCheck = false;
+//     }
+//   });
+// }
+
+
+if(data.players == this.you && this.players[this.you].Life <= 0  && !this.dead){
+
+  this.died(data.dealtBy, "Dammage")
+}else if (data.players == this.you && this.dead && this.players[this.you].Life > 0 && this.players[this.you].Poison < 10 &&  cmdrdmgCheck){
+  this.unDie(data.dealtBy)
+}
 
   }else if(data.change == "Poison"){
     this.players[data.players].Poison = this.players[data.players].Poison+data.amount;
-    this._oPlayers.next(this.players)
+    this._oPlayers.next(this.players )
     this.localdmgDlt[data.dealtBy][data.players] = this.localdmgDlt[data.dealtBy][data.players] + data.amount;
   this._dmgDlt.next(this.localdmgDlt)
+
+
+  if(data.players == this.you && this.players[this.you].Poison >= 10 && !this.dead){
+    this.died(data.dealtBy, "Infect")
+  }else if (data.players == this.you && this.dead && this.players[this.you].Life > 0 && this.players[this.you].Poison < 10 &&  cmdrdmgCheck){
+    this.unDie(data.dealtBy)
+  }
+
+
   }else if(data.change == "CMDR"){
     this.commanderDmg[data.i][data.j] = this.commanderDmg[data.i][data.j]+data.amount;
     this._cmdrDmg.next(this.commanderDmg)
+
+
+    if(data.i == this.you && this.commanderDmg[this.you][data.j] >= 21 && !this.dead && this.players[this.you].Life > 0){
+      this.died(data.j, "Commander Dammage")
+    }else if (data.players == this.you && this.dead && this.players[this.you].Life > 0 && this.players[this.you].Poison < 10  && cmdrdmgCheck){
+      this.unDie(data.dealtBy)
+    }
+
   }else if(data.change == "start"){
-    console.log(data)
-    // for(var i=0; i<this.players.length; i++) {
-    //   this.localdmgDlt[i] = [];
-    //   for(var j=0; j<this.players.length; j++) {
-    //     this.localdmgDlt[i][j] = 0;
-    //   }
-    // }
-    // console.log(this.localdmgDlt)
     this.localdmgDlt = data.playerDmg;
     this._dmgDlt.next(this.localdmgDlt)
     this.updatecmdr(data)
@@ -101,6 +122,27 @@ if(data.players == this.you && data.dealtBy == this.you && data.amount >= 1){
       this.lturn = this.lturn+1
       this._turn.next(this.lturn)
     }
+  }else if(data.change == "Died"){
+    if (data.player == this.you){
+      this.place == this.players.length - this.deadplayers.length
+    } 
+    this.deadplayers.push(data.player)
+
+    if(data.dealtBy == this.you){
+this.killed.push({"player" : data.player, "diedTo" : data.diedTo})
+    }
+    
+  }else if(data.change == "unDied"){
+    if (data.player == this.you){
+      this.place == undefined
+    } 
+    const isplayer = (element: any) => element = data.player;
+    this.deadplayers.splice(this.deadplayers.findIndex(isplayer))
+    if(data.dealtBy == this.you){
+      const isplayer = (element: any) => element.player = data.player
+this.killed.splice(this.killed.findIndex(isplayer));
+    }
+    
   }
 })
 
@@ -116,13 +158,16 @@ this._roomNum.next(this.roomNumber);
 
 })
 
-this.socket.on("join room", (data, cName, cImg)=>{
-  
+this.socket.on("join room", (data, cName, cImg, logged, user)=>{
 if (this.you == 0){
-this.addPlayer(data, cName, cImg)
+this.addPlayer(data, cName, cImg, logged, user)
 } 
 
 })
+
+this._User_Name.next(window.localStorage.userName)
+this.userName = window.localStorage.userName;
+this.user_id = window.localStorage.user_id;
 
   }
 
@@ -151,6 +196,12 @@ dmgDlt = this._dmgDlt.asObservable();
 _lifeGain: Subject<any> = new Subject<[]>();
 lifeGain = this._lifeGain.asObservable();
 
+_User_Name: Subject<any> = new Subject<[]>();
+User_Name = this._User_Name.asObservable();
+
+_isDead: Subject<any> = new Subject<[]>();
+isDead = this._isDead.asObservable();
+
 players: any = [];
 lactiveTurn: any;
 lturn: any;
@@ -161,17 +212,74 @@ roomNumber: any;
 localdmgDlt: any;
 localLifegain: number = 0;
 lifeGained: number = 0
+loggedIn: boolean = false
+userName: any;
+user_id: any;
+storage : any = window.localStorage;
+dead: boolean = false;
+deadplayers: any = [];
+place: any;
+killedBy: any;
+diedTo:any;
+killed: any = [];
+startLife: any;
+
+
+SubGameData(){
+
+}
+
+login(user: any){
+this.userName = user.user_name;
+this.user_id = user.user_id;
+this.loggedIn = true;
+this.storage.setItem("user_id", this.user_id)
+this.storage.setItem("userName", this.userName)
+this._User_Name.next(this.userName)
+this.router.navigate(['home'])
+}
+
+died(killedYou: number, diedTo: string){
+  this.dead = true;
+  this.killedBy = killedYou;
+  this.diedTo = diedTo
+  this._isDead.next(true)
+  this.socket.emit('changeGame', {change: "Died", player : this.you, dealtBy: killedYou, diedTo: diedTo,  roomNumber : this.roomNumber});
+}
+unDie(killedYou: number){
+  this.dead = false;
+  this.killedBy = undefined;
+  this.diedTo = undefined
+  this._isDead.next(false)
+  this.socket.emit('changeGame', {change: "unDied", player : this.you, dealtBy: killedYou,  roomNumber : this.roomNumber});
+}
+
+logOut(){
+  this.storage.clear()
+  this.userName = undefined;
+  this.user_id = undefined;
+}
 
 getCommander(search: any){
   return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+is%3Acommander`));
 }
 
 createRoom(form: any, cName: any, cImg: any){
- 
+
+  if(form.Life == ''){
+    this.startLife = 40
+  }else{
+    this.startLife = form.Life;
+  }
+
+  let player1;
   this.you = 0;
   this.socket.emit('NewRoom');
-  const player1 = new Player(form.User, cName, cImg , 40);
-  // const player1 = new Player("kevin", "Captain Sisay", "https://c1.scryfall.com/file/scryfall-cards/small/front/b/9/b90df81c-d738-46b3-8e96-9db0b3507ee0.jpg?1562741797" , 40);
+  if(this.userName == undefined){
+  player1 = new Player(form.User, cName, cImg , this.startLife, false);
+  }else{
+    player1 = new Player(this.userName, cName, cImg , this.startLife, true);
+  }
   this.players.push(player1)
 this.sendGameData();
 this.router.navigate(['counter'])
@@ -183,9 +291,17 @@ joinRoom(num: any, CommanderName:any , CommanderImg: any){
  
   this.roomNumber = num.roomNum
   this._roomNum.next(this.roomNumber);
-  
-  this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg });
-}
+
+
+
+  if(this.userName == undefined){
+
+    this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: false, UserName: num.User});
+    }else{
+      this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: true, UserName: this.userName });
+    }
+
+    }
 
 
 sendGameData() {
@@ -208,7 +324,6 @@ updatePlayerDmg(data: any){
 }
 
 updateTurnOrder(data: any){
-  // console.log(data, data.turnOrder)
   this.lturnOrder = data.turnOrder;
   this._turnOrder.next(this.lturnOrder)
 }
@@ -218,11 +333,11 @@ updateActiveTurn(data: any){
   this._activeTurn.next(this.lactiveTurn)
 }
 
-addPlayer(data: any, cName:any, cImg:any){
-  console.log(data)
-const player1 = new Player(data.User, cName, cImg, 40);
+addPlayer(data: any, cName:any, cImg:any, logged: boolean, user: string){
+const player1 = new Player(user, cName, cImg, this.startLife, logged);
 this.players.push(player1)
 this.sendGameData();
+
 
 }
 
@@ -255,35 +370,42 @@ this.sendGameData();
 //   }
   
 
-subLife(i: number){
-  this.socket.emit('changeGame', {change: "Life", players : i, dealtBy: this.you, amount: -1, roomNumber : this.roomNumber});
+subLife(i: number, amount: number){
+  let number = 0-amount;
+  this.socket.emit('changeGame', {change: "Life", players : i, dealtBy: this.you, amount: number, roomNumber : this.roomNumber});
 }
 
-addLife(i: number){
-  this.socket.emit('changeGame', {change: "Life", players : i,  dealtBy: this.you, amount: +1, roomNumber : this.roomNumber});
+addLife(i: number, amount: number){
+  
+  this.socket.emit('changeGame', {change: "Life", players : i,  dealtBy: this.you, amount: amount, roomNumber : this.roomNumber});
   if(i == this.you){
     this.lifeGained++;
   }
 }
 
-subPoison(i: number){
-  this.socket.emit('changeGame', {change: "Poison", players : i,  dealtBy: this.you, amount: -1, roomNumber : this.roomNumber});
+subPoison(i: number, amount: number){
+  let number = 0-amount;
+  this.socket.emit('changeGame', {change: "Poison", players : i,  dealtBy: this.you, amount: number, roomNumber : this.roomNumber});
 }
 
-addPoison(i: number){
-  this.socket.emit('changeGame', {change: "Poison", players : i,  dealtBy: this.you, amount: +1, roomNumber : this.roomNumber});
+addPoison(i: number, amount: number){
+  
+  this.socket.emit('changeGame', {change: "Poison", players : i,  dealtBy: this.you, amount: amount, roomNumber : this.roomNumber});
 }
 
-addCmdr(i: number, j:number){
-  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j,  amount: +1, roomNumber : this.roomNumber});
+addCmdr(i: number, j:number, amount: number){
+  let number = 0-amount;
+  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j,  amount: amount, roomNumber : this.roomNumber});
 // this.commanderDmg[i][j] = this.commanderDmg[i][j]+1
-this.subLife(i)
+
+this.subLife(i, amount)
 }
 
-subCmdr(i: number, j:number){
-  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j, amount: -1, roomNumber : this.roomNumber});
+subCmdr(i: number, j:number, amount: number){
+  let number = 0-amount;
+  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j, amount: number, roomNumber : this.roomNumber});
   // this.commanderDmg[i][j] = this.commanderDmg[i][j]-1
-  this.addLife(i)
+  this.addLife(i, amount)
 }
 
 changeTurn(){
@@ -316,11 +438,15 @@ startGame(turnOrder: any){
 
   
 reset(){
-  this.players= [];
-// this.others = [];
-this.you=undefined;
-this.roomNumber=undefined;
-this.commanderDmg = [];
+//   this.players= [];
+// this.you=undefined;
+// this.roomNumber=undefined;
+// this.commanderDmg = [];
+
+this.router.navigate(['home'])
+// window.location.reload()
+setTimeout(() => {  window.location.reload() }, 0);
+
 }
 
 }

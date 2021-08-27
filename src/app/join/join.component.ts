@@ -12,13 +12,18 @@ export class JoinComponent implements OnInit {
   constructor(private data: DataService) { }
 
 commanders: any;
-
+userName: any;
   ngOnInit(): void {
+    this.userName = this.data.userName;
   }
 
   joinRoom(num: any){
+    if(this.commanders[num.value.Commander].image_uris != undefined){
     this.data.joinRoom(num.value, this.commanders[num.value.Commander].name, this.commanders[num.value.Commander].image_uris.small);
-    // console.log(num.value.Commander)
+    }else{
+      this.data.joinRoom(num.value, this.commanders[num.value.Commander].name, this.commanders[num.value.Commander].card_faces[0].image_uris.small);
+    }
+
   }
 
   searchCommander(){

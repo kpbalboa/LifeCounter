@@ -8,26 +8,28 @@
 
 
     <label>name</label>
-    <input type="text" required ngModel  #FirstName="ngModel" name="User">
+    <div *ngIf="userName == undefined; else userBlock">
+    <input type="text" required ngModel  name="User" maxlength="10">
+    </div>
+    <ng-template #userBlock>
+        <span>{{this.userName}}</span>
+    </ng-template>
     <label>Starting Life</label>
-    <input type="number" required ngModel  #FirstName="ngModel" name="Life" value=40 autocomplete="off">
+    <input type="number"   ngModel placeholder="40" value="40" #FirstName="ngModel" name="Life" autocomplete="off">
     <label>Commander</label>
-    <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
+    <input type="text"  id="commanderSearch"><button (click)="searchCommander()">Search</button>
 
            
-    <!-- <div *ngFor="let item of commanders; let i = index">
-        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
-    <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
-    </div>
- -->
- <div class="cmdrGrid">    
-    <div *ngFor="let item of commanders; let i = index" class="cmdr">
-        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
-    <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
-    </div>
-</div>  
+  
+ <div *ngFor="let item of commanders; let i = index" class="cmdr">
+    <label for="{{item.name}}"><div *ngIf='item.image_uris != undefined; else twoface'><img src={{item.image_uris.small}} alt=""></div>
+        <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+        
+        {{item.name}}</label>
+<input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
+</div>
 
     <button>Submit</button>
 
-    <button (click)="test()">test</button>
+   
 </form>

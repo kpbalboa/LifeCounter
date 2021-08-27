@@ -5,14 +5,21 @@
     <label>Room Number</label>
     <input type="number" required ngModel  name="roomNum">
     <label>name</label>
-    <input type="text" required ngModel  name="User">
-    
+    <div *ngIf="userName == undefined; else userBlock">
+    <input type="text" required ngModel  name="User" maxlength="10">
+    </div>
+    <ng-template #userBlock>
+        <span>{{this.userName}}</span>
+    </ng-template>
     <label>Commander</label>
     <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
 
      <div class="cmdrGrid">    
     <div *ngFor="let item of commanders; let i = index" class="cmdr">
-        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
+        <label for="{{item.name}}"><div *ngIf='item.image_uris != undefined; else twoface'><img src={{item.image_uris.small}} alt=""></div>
+            <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+            
+            {{item.name}}</label>
     <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
     </div>
 </div>  

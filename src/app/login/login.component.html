@@ -1,0 +1,21 @@
+
+<h2>LOGIN</h2>
+
+<div id="alert" *ngFor="let error of alerts; let i = index">
+    {{error}}
+</div>
+
+<form #joinForm="ngForm" (ngSubmit)='login(joinForm)'>
+
+
+    <label>Email:</label>
+    <input type="email" required ngModel  name="Email" onkeypress="return event.charCode != 32">
+    <label>Password:</label>
+    <input type="password" required ngModel   name="Password" onkeypress="return event.charCode != 32" minlength="6" maxlength="14">
+ 
+
+
+
+ 
+
+    <button>Submit</button>

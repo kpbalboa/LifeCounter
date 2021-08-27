@@ -1,16 +1,19 @@
 .cmdrDmg{
     position: absolute;
     background-color: black;
-    height: 160px;
+    /* height: 160px; */
     top: 0px;
     width: 105%;
     left: -8px;
     display: grid;
-    grid-template-rows: auto auto;
-    grid-auto-flow: column;
+    grid-template-columns: auto auto;
+    
     z-index: 2;
     color: white;
     justify-items: center;
+}
+.cmdrDmg div{
+    height: 100px;
 }
 
 .hidden{
@@ -27,6 +30,8 @@
     display: flex;
     align-items: center;
     position: relative;
+    height: 100px;
+    left: -7px;
 }
 .idBadge{
     display: flex;
@@ -42,21 +47,44 @@
        display: flex;
     justify-content: space-evenly;
     width: 80%;
+    height: 100px;
 }
 
 .buttons div{
     display: flex;
     flex-direction: column;
+    height: 100px;
+    align-items: center;
+    margin: 10px;
 }
 
 .pregame{
     display: flex;
     flex-direction: column;
+    position: absolute;
+    top: 35px;
+    justify-content: start;
+    height: 90vh;
+    align-items: center;
+    left: 0;
+    z-index: 3;
+    background-color: black;
+    padding-top: 20px;
+    color: white;
 }
 
+
+
 .turnOrder{
+    /* display: grid; */
+    /* grid-template-columns: auto auto auto auto; */
     display: flex;
+    flex-direction: column;
     justify-content: space-evenly;
+    align-items: center;
+    width: 100vw;
+    margin-bottom: 40px;
+    color: white;
 }
 
 .you{
@@ -73,13 +101,16 @@
 }
 
 .turnOrder div{
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
     align-items: center;
     position: relative;
     height: 120px;
     justify-content: space-between;
-    margin: 8px;
+    margin: 8px; */
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    width: 80vw;
     
 }
 
@@ -88,7 +119,7 @@
     clip-path: circle(32px at 50px 48px);
     width: 100px;
     position: absolute;
-    top: 12px;
+    top: -12px;
 }
 
 .you{
@@ -96,12 +127,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    /* position: relative; */
-    height: 58vw;
+    height: 200px;
     width: 100vw;
     padding-top: 40px;
     position: absolute;
-    bottom: 50px;
+    bottom: 49px;
     left: 0;
 }
 
@@ -124,9 +154,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 90px;
+    height: 70px;
     justify-content: space-around;
-    width: 150px;
+    width: 80vw;
 
 
 }
@@ -159,8 +189,8 @@
     clip-path: circle(21px at 35px 33px);
     width: 70px;
     position: absolute;
-    top: 10px;
-    left: 6px;
+    top: 25px;
+    left: 45px;
 }
 
 .commander{
@@ -186,6 +216,7 @@
     left: 0;
     height: 50px;
     align-items: center;
+    z-index: 4;
 }
 
 .triggers{
@@ -216,4 +247,115 @@
     background-color: black;
     color: white;
     padding: 20px;
+    justify-content: space-around;
+    z-index: 5;
+    padding: 0px;
+    padding-top: 20px;
+}
+
+#extraOptions table, th, td{
+    border-collapse: collapse;
+    border: 1px solid white;
+    margin-top: 20px;
+}
+
+#extraOptions form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calc{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+#damageCalc{
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    height: 100vh;
+    z-index: 3;
+    position: fixed;
+    color: white;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.calcButtons{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+#playerGrid{
+display: grid;
+grid-template-columns: auto auto auto;
+}
+
+.allOpps{
+    display: flex;
+    display: flex;
+    flex-direction: column;
+    height: 155vw;
+}
+
+button{
+    color: #92ff1b;
+    background-color: black;
+    border: 3px solid #92ff1b;
+   
+    margin-top: 5px;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin: auto;
+    min-width: 76px;
+}
+
+button:active{
+    transform: translateY(4px);
+}
+
+.pregame .idBadge{
+    min-width: 100px;
+    padding: auto;
+}
+
+.pregame button{
+    padding: 25px;
+}
+
+.cmdr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 45vw;
+    text-align: center;
+}
+
+.cmdrGrid{
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+#damageCalc button{
+    padding: 15px;
+    margin-bottom: 9px;
+}
+
+.calcHead{
+    display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.calc{
+    display: flex;
+    flex-direction: column;
+}
+
+.submitCalc{
+    margin-top: 20px;
 }

@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { NewComponent } from './new/new.component';
 import { JoinComponent } from './join/join.component';
+import { CreateAccountComponent } from './create-account/create-account.component';
+import { LoginComponent } from './login/login.component';
 
 
 // const config: SocketIoConfig = { url: 'http://localhost:3000', options: {"transports" : ["websocket"]}
@@ -21,7 +23,9 @@ const config: SocketIoConfig = { url: 'http://192.168.1.47:3000', options:{}
 const appRoutes : Routes = [
   { path: 'home', component: HomeComponent, children:[
     { path: 'newGame',  component: NewComponent},
-    { path: 'join',  component: JoinComponent}
+    { path: 'join',  component: JoinComponent},
+    { path: 'newUser',  component: CreateAccountComponent},
+    { path: 'login',  component: LoginComponent}
 ] },
   { path: 'counter', component: CounterComponent },
   { path: '',
@@ -37,11 +41,13 @@ const appRoutes : Routes = [
     HomeComponent,
     CounterComponent,
     NewComponent,
-    JoinComponent
+    JoinComponent,
+    CreateAccountComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,HttpClientModule,
-     RouterModule.forRoot(appRoutes),
+     RouterModule.forRoot(appRoutes, { useHash: true}),
     FormsModule,
     SocketIoModule.forRoot(config)
   ],

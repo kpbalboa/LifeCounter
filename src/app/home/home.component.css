@@ -7,3 +7,33 @@
 h1{
     text-align: center;
 }
+
+.log{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 15px;
+}
+
+.loggedTrue{
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    align-items: flex-start;
+}
+
+
+button{
+    color: #92ff1b;
+    background-color: black;
+    border: 3px solid #92ff1b;
+   
+    margin-top: 5px;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin: auto;
+    min-width: 76px;
+}
+
+button:active{
+    transform: translateY(4px);
+}
