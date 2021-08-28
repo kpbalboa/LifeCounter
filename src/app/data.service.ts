@@ -1,9 +1,9 @@
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { Player } from './player';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
 import { Router } from '@angular/router';
+import { StoreDataService } from './store-data.service';
 
 import { HttpClient} from '@angular/common/http'
 
@@ -17,7 +17,7 @@ export class DataService {
   private socket: Socket;
 
 
-  constructor( private router: Router, private http: HttpClient ) { 
+  constructor( private router: Router, private http: HttpClient, private store: StoreDataService ) { 
     this.socket = io('http://localhost:3000');
     // this.socket = io('http://192.168.1.47:3000');
     // this.socket = io('http://140.82.114.4:3000');
@@ -124,12 +124,23 @@ if(data.players == this.you && this.players[this.you].Life <= 0  && !this.dead){
     }
   }else if(data.change == "Died"){
     if (data.player == this.you){
-      this.place == this.players.length - this.deadplayers.length
+      this.place = this.players.length - this.deadplayers.length
     } 
     this.deadplayers.push(data.player)
 
     if(data.dealtBy == this.you){
 this.killed.push({"player" : data.player, "diedTo" : data.diedTo})
+    }
+    if(this.players.length == this.deadplayers.length +1){
+      this.gameOver = true;
+      this._isGameOver.next(this.gameOver)
+    }
+    if(this.players.length == this.deadplayers.length +1 && this.dead == false){
+      this.win = data.diedTo;
+      this.place = 1;
+      this.liveTurns =this.activeTurn;
+      this.gameOver = true;
+      this._isGameOver.next(this.gameOver)
     }
     
   }else if(data.change == "unDied"){
@@ -143,6 +154,14 @@ this.killed.push({"player" : data.player, "diedTo" : data.diedTo})
 this.killed.splice(this.killed.findIndex(isplayer));
     }
     
+  }else if(data.change == "GameOver"){
+    this.gameOver = true;
+      this._isGameOver.next(this.gameOver)
+      if(this.win == undefined){
+        this.place == 2
+      }else{
+        this.place == 1
+      }
   }
 })
 
@@ -202,6 +221,9 @@ User_Name = this._User_Name.asObservable();
 _isDead: Subject<any> = new Subject<[]>();
 isDead = this._isDead.asObservable();
 
+_isGameOver: Subject<any> = new Subject<[]>();
+isGameOver = this._isGameOver.asObservable();
+
 players: any = [];
 lactiveTurn: any;
 lturn: any;
@@ -223,10 +245,13 @@ killedBy: any;
 diedTo:any;
 killed: any = [];
 startLife: any;
+win: any;
+liveTurns:any;
+gameOver: boolean = false;
 
 
 SubGameData(){
-
+this.store.subGamneData(this.players, this.localdmgDlt, this.localLifegain, this.place, this.win, this.commanderDmg, this.lturn, this.liveTurns, this.killedBy, this.killed, this.diedTo, this.you)
 }
 
 login(user: any){
@@ -245,6 +270,7 @@ died(killedYou: number, diedTo: string){
   this.diedTo = diedTo
   this._isDead.next(true)
   this.socket.emit('changeGame', {change: "Died", player : this.you, dealtBy: killedYou, diedTo: diedTo,  roomNumber : this.roomNumber});
+  this.liveTurns = this.lturn;
 }
 unDie(killedYou: number){
   this.dead = false;
@@ -262,6 +288,22 @@ logOut(){
 
 getCommander(search: any){
   return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+is%3Acommander`));
+}
+
+getWincons(search: any){
+  return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+%28oracle%3Awin+oracle%3Athe+oracle%3Agame%29`));
+}
+
+getLosecons(search: any){
+  return (this.http.get(`https://api.scryfall.com/cards/search?name&q=${search}+%28oracle%3Alose+oracle%3Athe+oracle%3Agame%29`));
+}
+
+winGame(value: any){
+this.win = value;
+this.socket.emit('changeGame', {change: "GameOver", roomNumber : this.roomNumber});
+}
+loseGame(lose: any){
+this.died(this.you, lose);
 }
 
 createRoom(form: any, cName: any, cImg: any){

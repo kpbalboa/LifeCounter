@@ -134,6 +134,50 @@
 <input type="checkbox" name="canDie" id="canDie" (click)="toggleAlert()">
 </div>
 
+<div class="winSearch">
+    ALTERNATE WIN
+    <br>
+    <label>Search</label>
+    <input type="text" id="winsearchSearch"><button (click)="searchWin()">Search</button>
+
+    <div class="cmdrGrid" *ngIf="wincons.length !=0" >  
+        <form #subWin="ngForm" (ngSubmit)='WinGame(subWin)'>
+        <div *ngFor="let item of wincons; let i = index" class="cmdr">
+            <label for="{{item.name}}">
+                <div *ngIf='item.image_uris != undefined; else twoface'>
+                    <img src={{item.image_uris.small}} alt="">
+                </div>
+                <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+                {{item.name}}</label>
+                <input required ngModel type="radio" id="{{item.name}}"  name="wincon" value="{{i}}">
+        </div>
+        <button>WIN!</button>
+        </form>
+</div>
+</div>
+
+<div class="LoseSearch">
+    <span>ALTERNATE LOSE</span>
+    <br>
+    <label>Search</label>
+    <input type="text" id="LosesearchSearch"><button (click)="searchLose()">Search</button>
+
+    <div class="cmdrGrid" *ngIf="Losecons.length !=0" >  
+        <form #subLose="ngForm" (ngSubmit)='LoseGame(subLose)'>
+        <div *ngFor="let item of Losecons; let i = index" class="cmdr">
+            <label for="{{item.name}}">
+                <div *ngIf='item.image_uris != undefined; else twoface'>
+                    <img src={{item.image_uris.small}} alt="">
+                </div>
+                <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+                {{item.name}}</label>
+                <input required ngModel type="radio" id="{{item.name}}"  name="Losecon" value="{{i}}">
+        </div>
+        <button>Lose!</button>
+        </form>
+</div>
+</div>
+
 <!-- <form #changeCMDR="ngForm" (ngSubmit)='changeCommander(changeCMDR)'>
 
     <label>Commander</label>
@@ -147,12 +191,14 @@
 </div>  
     <button>Submit</button>
 </form> -->
-<div *ngIf="dead">
+<div>
+<div *ngIf="dead || gameOver">
 <button (click)="subGame()">Submit Game And Quit</button>
 </div>
-<br>
+
 
 <button (click)="quit()">Quit</button>
+</div>
 </div>
 
 <div id="damageCalc" class="hidden">

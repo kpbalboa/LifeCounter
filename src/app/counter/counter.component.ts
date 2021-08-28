@@ -24,11 +24,15 @@ export class CounterComponent implements OnInit {
  endAlert: boolean = false;
  dmgDlt: any= [];
  lifeGained: any;
- commanders:any
+ commanders:any;
  dead: boolean = false;
  damageIndex: any;
  damageType: any;
  calcJ: any;
+ gameOver: any;
+
+ wincons: any=[];
+ Losecons: any=[];
 
 
 
@@ -36,8 +40,35 @@ export class CounterComponent implements OnInit {
   result:string = '';
   
 
+searchWin(){
+  let win: any = document.getElementById("winsearchSearch")
+  this.data.getWincons(win.value).subscribe((res: any) =>{
+    
+    this.wincons = res.data;
+  });
+}
+
+WinGame(form: any){
+
+this.data.winGame(this.wincons[form.value.wincon])
+}
+
+searchLose(){
+  let Lose: any = document.getElementById("LosesearchSearch")
+  this.data.getLosecons(Lose.value).subscribe((res: any) =>{
+    
+    this.Losecons = res.data;
+  });
+}
+
+LoseGame(form: any){
+
+this.data.loseGame(this.Losecons[form.value.Losecon])
+}
+
 
 subGame(){
+ 
   this.data.SubGameData();
 }
 
@@ -135,9 +166,11 @@ subGame(){
 
  
   ngOnInit(): void {
+
+    window.scrollTo(0,0)
     this.you = this.data.you
-    // this.dealCMDas = this.you;
     this.players = this.data.players;
+    this.gameOver = this.data.gameOver;
     
     this.data.oPlayers.subscribe((data)=>{
      this.players= data
@@ -176,6 +209,10 @@ subGame(){
     // this.activeTurn = 0;
     this.data.isDead.subscribe((res: boolean)=>{
       this.dead = res;
+    })
+
+    this.data.isGameOver.subscribe((res:boolean)=>{
+      this.gameOver= res;
     })
     
   }
