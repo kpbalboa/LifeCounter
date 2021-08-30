@@ -12,6 +12,9 @@ import { NewComponent } from './new/new.component';
 import { JoinComponent } from './join/join.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { LoginComponent } from './login/login.component';
+import { StatsHomeComponent } from './stats-home/stats-home.component';
+import { YouStatsComponent } from './you-stats/you-stats.component';
+import { FriendstatsComponent } from './friendstats/friendstats.component';
 
 
 // const config: SocketIoConfig = { url: 'http://localhost:3000', options: {"transports" : ["websocket"]}
@@ -31,6 +34,12 @@ const appRoutes : Routes = [
   { path: '',
     redirectTo: '/home',
     pathMatch: 'full'
+  },
+  {
+    path: 'stats', component: StatsHomeComponent, children:[
+      {path: 'yourStats', component: YouStatsComponent},
+      {path:'UserStats', component: FriendstatsComponent}
+    ]
   }
 ]
 
@@ -43,7 +52,10 @@ const appRoutes : Routes = [
     NewComponent,
     JoinComponent,
     CreateAccountComponent,
-    LoginComponent
+    LoginComponent,
+    StatsHomeComponent,
+    YouStatsComponent,
+    FriendstatsComponent
   ],
   imports: [
     BrowserModule,HttpClientModule,

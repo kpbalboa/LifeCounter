@@ -96,6 +96,9 @@ if(data.players == this.you && this.players[this.you].Life <= 0  && !this.dead){
     this.commanderDmg[data.i][data.j] = this.commanderDmg[data.i][data.j]+data.amount;
     this._cmdrDmg.next(this.commanderDmg)
 
+if(data.j == this.you){
+  this.cmdrdmgtaken[data.from] = this.cmdrdmgtaken[data.from]+data.amount
+}
 
     if(data.i == this.you && this.commanderDmg[this.you][data.j] >= 21 && !this.dead && this.players[this.you].Life > 0){
       this.died(data.j, "Commander Dammage")
@@ -105,6 +108,7 @@ if(data.players == this.you && this.players[this.you].Life <= 0  && !this.dead){
 
   }else if(data.change == "start"){
     this.localdmgDlt = data.playerDmg;
+
     this._dmgDlt.next(this.localdmgDlt)
     this.updatecmdr(data)
     this.updateTurnOrder(data)
@@ -112,6 +116,11 @@ if(data.players == this.you && this.players[this.you].Life <= 0  && !this.dead){
     this._turn.next(this.lturn)
     this.lactiveTurn = 0;
     this.updateActiveTurn(0)
+    this.players.forEach((element: any) => {
+      this.cmdrdmgtaken.push(0)
+      this.cmdrdmgdlt.push(0)
+    });
+  
   }else if(data.change == "changeTurn"){
     if(this.lactiveTurn < this.players.length-1){
       this.lactiveTurn = this.lactiveTurn+1;
@@ -138,7 +147,7 @@ this.killed.push({"player" : data.player, "diedTo" : data.diedTo})
     if(this.players.length == this.deadplayers.length +1 && this.dead == false){
       this.win = data.diedTo;
       this.place = 1;
-      this.liveTurns =this.activeTurn;
+      this.liveTurns =this.lturn;
       this.gameOver = true;
       this._isGameOver.next(this.gameOver)
     }
@@ -224,11 +233,16 @@ isDead = this._isDead.asObservable();
 _isGameOver: Subject<any> = new Subject<[]>();
 isGameOver = this._isGameOver.asObservable();
 
+_commanderList: Subject<any> = new Subject<[]>();
+commanderList = this._commanderList.asObservable();
+
 players: any = [];
 lactiveTurn: any;
 lturn: any;
 lturnOrder: any;
 commanderDmg: any = [];
+playerDmg: any = [];
+commanders: any = [];
 you:any;
 roomNumber: any;
 localdmgDlt: any;
@@ -248,10 +262,11 @@ startLife: any;
 win: any;
 liveTurns:any;
 gameOver: boolean = false;
-
+cmdrdmgdlt:any=[];
+cmdrdmgtaken:any=[];
 
 SubGameData(){
-this.store.subGamneData(this.players, this.localdmgDlt, this.localLifegain, this.place, this.win, this.commanderDmg, this.lturn, this.liveTurns, this.killedBy, this.killed, this.diedTo, this.you)
+this.store.subGamneData(this.players, this.localdmgDlt, this.localLifegain, this.place, this.win, this.commanderDmg, this.lturn, this.liveTurns, this.killedBy, this.killed, this.diedTo, this.you, this.cmdrdmgtaken, this.cmdrdmgdlt)
 }
 
 login(user: any){
@@ -306,7 +321,7 @@ loseGame(lose: any){
 this.died(this.you, lose);
 }
 
-createRoom(form: any, cName: any, cImg: any){
+createRoom(form: any, cName: any, cImg: any, partner?: any, partnerImg?: any){
 
   if(form.Life == ''){
     this.startLife = 40
@@ -318,9 +333,9 @@ createRoom(form: any, cName: any, cImg: any){
   this.you = 0;
   this.socket.emit('NewRoom');
   if(this.userName == undefined){
-  player1 = new Player(form.User, cName, cImg , this.startLife, false);
+  player1 = new Player(form.User, cName, cImg , this.startLife, false, partner, partnerImg);
   }else{
-    player1 = new Player(this.userName, cName, cImg , this.startLife, true);
+    player1 = new Player(this.userName, cName, cImg , this.startLife, true,  partner, partnerImg);
   }
   this.players.push(player1)
 this.sendGameData();
@@ -357,12 +372,14 @@ updatePlayers(data: any){
 
 updatecmdr(data: any){
 
+  this.commanders = data.commanderList;
+  this._commanderList.next(this.commanders)
   this.commanderDmg = data.cmdrdmg;
   this._cmdrDmg.next(data.cmdrdmg)
 }
 
 updatePlayerDmg(data: any){
-  this.localdmgDlt = data.cmdrdmg
+  this.localdmgDlt = data.playerDmg
 }
 
 updateTurnOrder(data: any){
@@ -383,33 +400,6 @@ this.sendGameData();
 
 }
 
-// subLife(i: number){
-//   this.socket.emit('changeLife', {change: "Life", players : i, amount: -1, roomNumber : this.roomNumber});
-// }
-
-// addLife(i: number){
-//   this.socket.emit('changeLife', {change: "Life", players : i, amount: +1, roomNumber : this.roomNumber});
-// }
-
-// subPoison(i: number){
-//   this.socket.emit('changePoison', {change: "Poison", players : i, amount: -1, roomNumber : this.roomNumber});
-// }
-
-// addPoison(i: number){
-//   this.socket.emit('changePoison', {change: "Poison", players : i, amount: +1, roomNumber : this.roomNumber});
-// }
-
-// addCmdr(i: number, j:number){
-//   this.socket.emit('change CDMG', { i : i, j : j,  amount: +1, roomNumber : this.roomNumber});
-// // this.commanderDmg[i][j] = this.commanderDmg[i][j]+1
-// this.subLife(i)
-// }
-
-// subCmdr(i: number, j:number){
-//   this.socket.emit('change CDMG', { i : i, j : j, amount: -1, roomNumber : this.roomNumber});
-//   // this.commanderDmg[i][j] = this.commanderDmg[i][j]-1
-//   this.addLife(i)
-//   }
   
 
 subLife(i: number, amount: number){
@@ -437,17 +427,21 @@ addPoison(i: number, amount: number){
 
 addCmdr(i: number, j:number, amount: number){
   let number = 0-amount;
-  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j,  amount: amount, roomNumber : this.roomNumber});
-// this.commanderDmg[i][j] = this.commanderDmg[i][j]+1
+  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j, from: this.you,  amount: amount, roomNumber : this.roomNumber});
 
-this.subLife(i, amount)
+  this.cmdrdmgdlt[j] = this.cmdrdmgdlt[j] + amount;
+
+
+this.subLife(j, amount)
 }
 
 subCmdr(i: number, j:number, amount: number){
   let number = 0-amount;
-  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j, amount: number, roomNumber : this.roomNumber});
-  // this.commanderDmg[i][j] = this.commanderDmg[i][j]-1
-  this.addLife(i, amount)
+  this.socket.emit('changeGame', {change: "CMDR", i : i, j : j, from: this.you, amount: number, roomNumber : this.roomNumber});
+  this.addLife(j, amount)
+
+  this.cmdrdmgdlt[j] = this.cmdrdmgdlt[j] - amount;
+
 }
 
 changeTurn(){
@@ -455,26 +449,35 @@ changeTurn(){
 }
   
 
-// startGame(turnOrder: any){
-  
-// for(var i=0; i<this.players.length; i++) {
-//   this.commanderDmg[i] = [];
-//   for(var j=0; j<this.players.length; j++) {
-//       this.commanderDmg[i][j] = 0;
-//   }
-// }
-// this.socket.emit('startGame', { cmdrdmg: this.commanderDmg, turnOrder: turnOrder, roomNumber : this.roomNumber});
-// }
 
 startGame(turnOrder: any){
   
   for(var i=0; i<this.players.length; i++) {
+    this.playerDmg[i] = [];
+    
+    for(var j=0; j<this.players.length; j++) {
+        this.playerDmg[i][j] = 0;
+    }
+  }
+
+  this.players.forEach((player: any) => {
+this.commanders.push({"commander" : player.Commander, "image": player.commanderImg})
+if (player.partner != undefined){
+  this.commanders.push({"commander" : player.partner, "image": player.partnerImg})
+}
+  });
+
+
+  for(var i=0; i<this.commanders.length; i++) {
     this.commanderDmg[i] = [];
     for(var j=0; j<this.players.length; j++) {
         this.commanderDmg[i][j] = 0;
     }
   }
-  this.socket.emit('changeGame', {change: "start", cmdrdmg: this.commanderDmg, playerDmg : this.commanderDmg, turnOrder: turnOrder, roomNumber : this.roomNumber});
+
+
+
+  this.socket.emit('changeGame', {change: "start", cmdrdmg: this.commanderDmg, playerDmg : this.commanderDmg, turnOrder: turnOrder, commanderList: this.commanders, roomNumber : this.roomNumber});
   }
 
 

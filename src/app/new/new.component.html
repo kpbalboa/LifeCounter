@@ -29,6 +29,17 @@
 <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
 </div>
 
+    <label>Partner Commander: (optional)</label>
+    <input type="text"  id="partnercommanderSearch"><button (click)="searchPartners()">Search</button>
+
+<div *ngFor="let item of partners; let i = index" class="cmdr">
+    <label for="{{item.name}}"><div *ngIf='item.image_uris != undefined; else twoface'><img src={{item.image_uris.small}} alt=""></div>
+        <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+        
+        {{item.name}}</label>
+<input ngModel type="radio" id="{{item.name}}"  name="Partner" value="{{i}}">
+</div>
+
     <button>Submit</button>
 
    

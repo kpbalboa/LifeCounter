@@ -30,9 +30,11 @@ export class CounterComponent implements OnInit {
  damageType: any;
  calcJ: any;
  gameOver: any;
-
+commanderList: any=[];
  wincons: any=[];
  Losecons: any=[];
+
+ mainCommanderI: any;
 
 
 
@@ -183,6 +185,7 @@ subGame(){
     
     this.data.cmdrDmg.subscribe((data)=>{
       this.cmdrDmg= data
+      console.log(this.cmdrDmg)
      })
      this.data.roomNum.subscribe((data: any)=>{
        this.roomNum = data
@@ -214,8 +217,22 @@ subGame(){
     this.data.isGameOver.subscribe((res:boolean)=>{
       this.gameOver= res;
     })
+
+    this.data.commanderList.subscribe((res:boolean)=>{
+      this.commanderList= res;
+      this.mainCommanderI = this.findWithAttr(this.commanderList, "commander", this.players[this.you].Commander)
+    })
     
   }
+
+  findWithAttr(array: any, attr: any, value: any) {
+    for(var i = 0; i < array.length; i += 1) {
+        if(array[i][attr] === value) {
+            return i;
+        }
+    }
+    return -1;
+}
 
   searchCommander(){
     let cmdr: any = document.getElementById("commanderSearch")

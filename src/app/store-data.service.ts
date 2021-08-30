@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import { DataService } from '../app/data.service';
+import { stringify } from '@angular/compiler/src/util';
+
 
 
 @Injectable({
@@ -21,18 +24,9 @@ export class StoreDataService {
     // return this.http.post('http://192.168.1.47:3000/login', data)
   }
 
-  subGamneData(players: any, localdmgDlt: any, localLifegain: any, place: any, win: any, commanderDmg: any, lturn: any, turnsAlive: any, killedBy: any, killed: any, diedTo: any, you: number){
-    // console.log(players)
-    // console.log(localdmgDlt)
-    // console.log(localLifegain)
-    // console.log(place)
-    // console.log(win)
-    // console.log(commanderDmg)
-    // console.log(lturn)
-    // console.log(killedBy)
-    // console.log(killed)
-    // console.log(diedTo)
-
+  subGamneData(players: any, localdmgDlt: any, localLifegain: any, place: any, win: any, commanderDmg: any, lturn: any, turnsAlive: any, killedBy: any, killed: any, diedTo: any, you: number, ctaken: any, cdelt:any){
+  
+    console.log( players);
     let op1: any;
     let op2 : any;
     let op3:any;
@@ -45,58 +39,136 @@ export class StoreDataService {
     let cmdBy1: any;
     let cmdBy2: any;
     let cmdBy3: any;
+    let D1: any;
+    let D2: any;
+    let D3: any;
+    let DBy1: any;
+    let DBy2: any;
+    let DBy3: any;
+    let totalDelt: any = 0;
+    let totalTaken: any = 0;
 
-    commanderDmg.forEach((e: any, i:number) => {
-      if(i == you){
-        e.forEach((e:any, i: any) => {
-          if(i != you){
-            if(cmdBy1 == undefined){
-              cmdBy1 = e
-             }else if(cmdBy2 == undefined){
-              cmdBy2 = e
-             }else if(cmdBy3 == undefined){
-              cmdBy3 = e
-            }
-          }
-        });
-      }else if(i !=you){
-        if(cmd1 == undefined){
-          cmd1 = e[you]
-         }else if(cmd2 == undefined){
-          cmd2 = e[you]
-         }else if(cmd3 == undefined){
-          cmd3 = e[you]
-        }
-      }
-    });
+localdmgDlt[you].forEach((e:any, i:any) => {
+  if(you != i){
+    totalDelt = totalDelt+e
+  }
+});
 
+localdmgDlt.forEach((e:any, i:any) => {
+ totalTaken = totalTaken + e[you]
+});
+
+    let yourcommanders;
+
+    if(players[you].partner != undefined){
+      let commanders = [players[you].Commander, players[you].partner]
+      let yousorted = commanders.sort();
+yourcommanders = yousorted[0]+", "+yousorted[1];
+
+    }else{
+      yourcommanders = players[you].Commander
+    }
     
 
     players.forEach((player: any, index: number) => {
+      if(player.partner == undefined){
       if(index != you && player.loggedin){
         if(opc1 == undefined){
          op1 = player.Name
          opc1 = player.Commander
+         cmd1 = cdelt [index]
+         cmdBy1 = ctaken [index]
+         D1 = localdmgDlt[you] [index]
+         DBy1 =  localdmgDlt[index][you]
         }else if(opc2 == undefined){
            op2 = player.Name
            opc2 = player.Commander
+           cmd2 = cdelt [index]
+           cmdBy2 = ctaken [index]
+           D2 = localdmgDlt[you] [index]
+           DBy2 =  localdmgDlt[index][you]
         }else if(opc3 == undefined){
           op3 = player.Name
           opc3 = player.Commander
+          cmd3 = cdelt [index]
+          cmdBy3 = ctaken [index]
+          D3 = localdmgDlt[you] [index]
+          DBy3 =  localdmgDlt[index][you]
        }
       }else if(index != you && !player.loggedin){
         if(opc1 == undefined){
-    
+          cmd1 = cdelt [index]
+          cmdBy1 = ctaken [index]
          opc1 = player.Commander
+         D1 = localdmgDlt[you] [index]
+         DBy1 =  localdmgDlt[index][you]
         }else if(opc2 == undefined){
-          
+          cmd2 = cdelt [index]
            opc2 = player.Commander
+           cmdBy2 = ctaken [index]
+           D2 = localdmgDlt[you] [index]
+           DBy2 =  localdmgDlt[index][you]
         }else if(opc3 == undefined){
-      
+          cmd3 = cdelt [index]
           opc3 = player.Commander
+          cmdBy3 = ctaken [index]
+          D3 = localdmgDlt[you] [index]
+          DBy3 =  localdmgDlt[index][you]
        }
       }
-      
+    }else{
+
+      let opcommanders = [players[index].Commander, players[index].partner]
+      let opsorted = opcommanders.sort();
+let opcmd = opsorted[0]+", "+opsorted[1];
+
+      if(index != you && player.loggedin){
+        if(opc1 == undefined){
+          cmd1 = cdelt [index]
+          cmdBy1 = ctaken [index]
+         op1 = player.Name
+         opc1 = opcmd
+         D1 = localdmgDlt[you] [index]
+         DBy1 =  localdmgDlt[index][you]
+        }else if(opc2 == undefined){
+          cmd1 = cdelt [index]
+          cmdBy1 = ctaken [index]
+           op2 = player.Name
+           opc2 = opcmd
+           D2 = localdmgDlt[you] [index]
+           DBy2 =  localdmgDlt[index][you]
+        }else if(opc3 == undefined){
+          cmd1 = cdelt [index]
+          cmdBy1 = ctaken [index]
+          op3 = player.Name
+          opc3 = opcmd
+          D3 = localdmgDlt[you] [index]
+          DBy3 =  localdmgDlt[index][you]
+       }
+      }else if(index != you && !player.loggedin){
+        if(opc1 == undefined){
+          cmd1 = cdelt [index]
+          cmdBy1 = ctaken [index]
+          D1 = localdmgDlt[you] [index]
+          DBy1 =  localdmgDlt[index][you]
+    
+         opc1 = opcmd
+        }else if(opc2 == undefined){
+          cmd2 = cdelt [index]
+          cmdBy2 = ctaken [index]
+          D2 = localdmgDlt[you] [index]
+          DBy2 =  localdmgDlt[index][you]
+          
+           opc2 = opcmd
+        }else if(opc3 == undefined){
+          cmd3 = cdelt [index]
+          cmdBy3 = ctaken [index]
+          D3 = localdmgDlt[you] [index]
+          DBy3 =  localdmgDlt[index][you]
+          opc3 = opcmd
+       }
+      }
+    }
     });
 
     let killedlist = "";
@@ -107,7 +179,7 @@ export class StoreDataService {
     
     killed.forEach((e: any) => {
       if (e.loggedin){
-        killedlist == killedlist + players[e.Player].Named
+        killedlist == killedlist + players[e.player].Named
       }
       if(players[e.player].Name != players[you].Name){
         killednumber ++;
@@ -120,9 +192,10 @@ export class StoreDataService {
       }
     });
 
+
     let gameData = {
       "you": players[you].Name,
-      "commander": players[you].Commander,
+      "commander": yourcommanders,
       "opponent1" : op1,
       "opponent2"  : op2,
       "opponent3" : op3,
@@ -130,6 +203,7 @@ export class StoreDataService {
       "commander2" : opc2,
       "commander3" : opc3,
       "lifeGain" : localLifegain,
+      "DamageSelf": localdmgDlt[you][you],
       "place" : place,
       "win" : win,
       "commanderDelt1" : cmd1,
@@ -138,6 +212,12 @@ export class StoreDataService {
       "commanderDeltBy1" : cmdBy1,
       "commanderDeltBy2" : cmdBy2,
       "commanderDeltBy3" : cmdBy3,
+      "Delt1" : D1,
+      "Delt2" : D2,
+      "Delt3" : D3,
+      "DeltBy1" : DBy1,
+      "DeltBy2" : DBy2,
+      "DeltBy3" : DBy3,
       "turnsAlive" : turnsAlive,
       "Turns" : lturn,
       "KilledWho": killedlist,
@@ -146,7 +226,9 @@ export class StoreDataService {
       "KilledCmd" : cmdnumber,
       "KilledPoison" : poisonnumber,
       "KilledBy" : killedBy,
-      "KilledHow" : diedTo
+      "KilledHow" : diedTo,
+       "DamageDelt": totalDelt,
+       "DamageTaken": totalTaken
     }
 
     console.log(gameData)
@@ -155,5 +237,14 @@ export class StoreDataService {
     this.http.post('http://localhost:3000/subGameData', gameData).subscribe((res:any)=>{
       console.log(res)
     })
+  }
+
+
+  getMyStats(data: any){
+  
+    this.http.post('http://localhost:3000/getGameData', data).subscribe((res)=>{
+      console.log(res)
+    })
+  
   }
 }

@@ -19,9 +19,9 @@
     <!-- <div *ngIf="this.cmdrDmg.length !== 0"> -->
         <div>
         
-    <button (click)="addCmdrDmg(i, this.you, 1)">Add</button>
-    <span (click)="toggleDammage(i, 'commander', this.you)">{{this.cmdrDmg[i][this.you]}}</span>
-    <button (click)="subCmdrDmg(i, this.you, 1)">sub</button>
+    <button (click)="addCmdrDmg(this.mainCommanderI, i, 1)">Add</button>
+    <span (click)="toggleDammage(this.mainCommanderI, 'commander', i)">{{this.cmdrDmg[this.mainCommanderI][i]}}</span>
+    <button (click)="subCmdrDmg(this.mainCommanderI, i, 1)">sub</button>
     </div>
     <button (click)="seeMore(i)">See More</button>
     </div>
@@ -37,13 +37,23 @@
                 <button (click)="subtractPoison(i, 1)">sub</button>
                 <img src="../../assets/poison.png" alt="" (click)="toggleDammage(i, 'poison', undefined)">
             </div>
-    <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
+    <!-- <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
         <div *ngIf="j !== this.you" class="commander">
-         <img src={{this.players[j].commanderImg}} alt="" (click)="changeSource(j)" (click)="toggleDammage(i, 'commander', j)"> <button (click)="addCmdrDmg(i, j, 1)">add</button>
+         <img src={{this.players[j].commanderImg}} alt=""  (click)="toggleDammage(i, 'commander', j)">
+          <button (click)="addCmdrDmg(i, j, 1)">add</button>
          <span>{{dmg}}</span>
          <button (click)="subCmdrDmg(i, j, 1)">sub </button>
     </div>
+    </div> -->
+
+    <div *ngFor="let dmg of commanderList; let j = index" class="commander">
+        <button (click)="addCmdrDmg(j,i, 1)">add</button>
+        <span>{{cmdrDmg[j][i]}}</span>
+        <button (click)="subCmdrDmg(j,i, 1)">sub </button>
+        <img src={{dmg.image}} alt=""  (click)="toggleDammage(j, 'commander', i)">
     </div>
+
+
     <button (click)="hide(i)">hide</button>
 </div>
 </div>
@@ -84,8 +94,12 @@
         </ng-template>
         
         <div class="allCDmg">
-        <div *ngFor="let dmg of cmdrDmg[this.you]; let i = index" class="cmdrDmgDelt">
-            <img src={{this.players[i].commanderImg}} alt=""> <span>{{dmg}}</span>
+        <div *ngFor="let dmg of commanderList; let i = index" class="cmdrDmgDelt">
+            <div *ngIf="cmdrDmg[i][you] > 0">
+                <div>
+            <img src={{dmg.image}} alt=""> <span>{{cmdrDmg[i][you]}}</span>
+            </div>
+            </div>
         </div>
         </div>
 </div>
@@ -178,19 +192,7 @@
 </div>
 </div>
 
-<!-- <form #changeCMDR="ngForm" (ngSubmit)='changeCommander(changeCMDR)'>
 
-    <label>Commander</label>
-    <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
-
-     <div class="cmdrGrid">    
-    <div *ngFor="let item of commanders; let i = index" class="cmdr">
-        <label for="{{item.name}}"><img src={{item.image_uris.small}} alt="">{{item.name}}</label>
-    <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
-    </div>
-</div>  
-    <button>Submit</button>
-</form> -->
 <div>
 <div *ngIf="dead || gameOver">
 <button (click)="subGame()">Submit Game And Quit</button>

@@ -11,6 +11,7 @@
     z-index: 2;
     color: white;
     justify-items: center;
+    padding-bottom: 20px;
 }
 .cmdrDmg div{
     height: 100px;

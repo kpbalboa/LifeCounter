@@ -1,0 +1,12 @@
+<h1>GAME STATS</h1>
+<a routerLink="/home">HOME</a>
+
+{{this.loggedIn}}
+
+<div class="options" *ngIf="this.loggedIn != undefined; else elseblock">
+<a routerLink="yourStats">Your Stats</a>
+<a routerLink="UserStats">Find User Stats</a>
+</div>
+<router-outlet></router-outlet>
+
+<ng-template #elseblock>Log in to use this feature</ng-template>
