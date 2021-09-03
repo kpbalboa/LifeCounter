@@ -14,3 +14,5 @@
     -ms-user-select: auto !important;
     user-select: auto !important;
     }
+
+    @import 'bootstrap/dist/css/bootstrap.min/css'

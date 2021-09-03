@@ -12,9 +12,9 @@
     <!-- <span>{{this.players[i].Life}}</span> -->
     <div class="buttons" *ngIf="this.cmdrDmg.length !== 0; else orderBlock">
         <div>
-    <button (click)="addLife(i, 1)">Add</button>
+    <button (click)="addLife(i, 1)">+</button>
     <span (click)="toggleDammage(i, 'damage', undefined)">♥{{this.players[i].Life}}</span>
-    <button (click)="subtractLife(i, 1)">sub</button>
+    <button (click)="subtractLife(i, 1)">-</button>
 </div>
     <!-- <div *ngIf="this.cmdrDmg.length !== 0"> -->
         <div>
@@ -32,9 +32,9 @@
 
         <div [id]="'cmdr' + i" class="cmdrDmg hidden">
             <div class="poison">
-                <button (click)="addPoison(i, 1)">Add</button>
+                <button (click)="addPoison(i, 1)">+</button>
                 <span>{{this.players[i].Poison}}</span>
-                <button (click)="subtractPoison(i, 1)">sub</button>
+                <button (click)="subtractPoison(i, 1)">-</button>
                 <img src="../../assets/poison.png" alt="" (click)="toggleDammage(i, 'poison', undefined)">
             </div>
     <!-- <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
@@ -47,9 +47,9 @@
     </div> -->
 
     <div *ngFor="let dmg of commanderList; let j = index" class="commander">
-        <button (click)="addCmdrDmg(j,i, 1)">add</button>
+        <button (click)="addCmdrDmg(j,i, 1)">+</button>
         <span>{{cmdrDmg[j][i]}}</span>
-        <button (click)="subCmdrDmg(j,i, 1)">sub </button>
+        <button (click)="subCmdrDmg(j,i, 1)">-</button>
         <img src={{dmg.image}} alt=""  (click)="toggleDammage(j, 'commander', i)">
     </div>
 
@@ -84,9 +84,9 @@
      <span *ngIf="!this.dead; else deadBlock">{{this.players[this.you].Name}}(you)</span>
     
     <div class="buttons">
-        <button (click)="addLife(this.you, 1)">Add</button>
+        <button (click)="addLife(this.you, 1)">+</button>
         <span (click)="toggleDammage(this.you, 'damage', undefined)">♥ {{this.players[this.you].Life}}</span>
-        <button (click)="subtractLife(this.you, 1)">sub</button>
+        <button (click)="subtractLife(this.you, 1)">-</button>
         </div>
         </div>
         <ng-template #deadBlock>

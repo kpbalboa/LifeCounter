@@ -36,10 +36,12 @@ export class DataService {
 
 this.socket.on("changeGame", data=>{
 
+  console.log(this.commanderDmg, data)
+
   let cmdrdmgCheck;
 if (this.dead){
-  this.commanderDmg[this.you].forEach((element: any) => {
-    if(element >= 21){
+  this.commanderDmg.forEach((element: any) => {
+    if(element[this.you] >= 21){
       cmdrdmgCheck = false;
     }
   });
@@ -100,8 +102,9 @@ if(data.j == this.you){
   this.cmdrdmgtaken[data.from] = this.cmdrdmgtaken[data.from]+data.amount
 }
 
-    if(data.i == this.you && this.commanderDmg[this.you][data.j] >= 21 && !this.dead && this.players[this.you].Life > 0){
-      this.died(data.j, "Commander Dammage")
+
+    if(data.j == this.you && this.commanderDmg[data.i][this.you] >= 21 && !this.dead && this.players[this.you].Life > 0){
+      this.died(data.from, "Commander Dammage")
     }else if (data.players == this.you && this.dead && this.players[this.you].Life > 0 && this.players[this.you].Poison < 10  && cmdrdmgCheck){
       this.unDie(data.dealtBy)
     }
@@ -140,6 +143,8 @@ if(data.j == this.you){
     if(data.dealtBy == this.you){
 this.killed.push({"player" : data.player, "diedTo" : data.diedTo})
     }
+    console.log(data.dealtBy)
+    console.log(this.killed)
     if(this.players.length == this.deadplayers.length +1){
       this.gameOver = true;
       this._isGameOver.next(this.gameOver)
@@ -186,9 +191,9 @@ this._roomNum.next(this.roomNumber);
 
 })
 
-this.socket.on("join room", (data, cName, cImg, logged, user)=>{
+this.socket.on("join room", (data, cName, cImg, logged, user, pName, pImg)=>{
 if (this.you == 0){
-this.addPlayer(data, cName, cImg, logged, user)
+this.addPlayer(data, cName, cImg, logged, user, pName, pImg)
 } 
 
 })
@@ -344,7 +349,7 @@ this.sendGameData();
 }
 
 
-joinRoom(num: any, CommanderName:any , CommanderImg: any){
+joinRoom(num: any, CommanderName:any , CommanderImg: any,  partner?: any, partnerImg?: any){
  
   this.roomNumber = num.roomNum
   this._roomNum.next(this.roomNumber);
@@ -353,9 +358,9 @@ joinRoom(num: any, CommanderName:any , CommanderImg: any){
 
   if(this.userName == undefined){
 
-    this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: false, UserName: num.User});
+    this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: false, UserName: num.User, partner, partnerImg});
     }else{
-      this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: true, UserName: this.userName });
+      this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: true, UserName: this.userName, partner, partnerImg });
     }
 
     }
@@ -392,8 +397,8 @@ updateActiveTurn(data: any){
   this._activeTurn.next(this.lactiveTurn)
 }
 
-addPlayer(data: any, cName:any, cImg:any, logged: boolean, user: string){
-const player1 = new Player(user, cName, cImg, this.startLife, logged);
+addPlayer(data: any, cName:any, cImg:any, logged: boolean, user: string, pName?: any, pImg?: any){
+const player1 = new Player(user, cName, cImg, this.startLife, logged, pName, pImg);
 this.players.push(player1)
 this.sendGameData();
 

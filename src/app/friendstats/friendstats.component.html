@@ -1,1 +1,81 @@
-<p>friendstats works!</p>
+
+<form #joinForm="ngForm" (ngSubmit)='findFriend(joinForm)'>
+
+
+    <label>NAME</label>
+    <input type="text" required ngModel  name="User" maxlength="10">
+<button>SEARCH</button>
+    </form>
+
+<div *ngIf="barChartData != undefined">
+
+<div class="statGrid">
+    <div class="stat">
+        <span>Games Played</span>
+        <span>{{this.gamesPlayed}}</span>
+    </div>
+    
+    <div class="stat">
+        <span>Wins</span>
+        <span>{{this.wins}}</span>
+    </div>
+    
+    <div class="stat">
+        <span>Damage Delt</span>
+        <span>{{this.damageDelt}}</span>
+    </div>
+    <div class="stat">
+        <span>Damage Taken</span>
+        <span>{{this.taken}}</span>
+    </div>
+    <div class="stat">
+        <span>Life Gained</span>
+        <span>{{this.lifegain}}</span>
+    </div>
+    <div class="stat">
+        <span>Dammaged Delt Self</span>
+        <span>{{this.damageSelf}}</span>
+    </div>
+    <div class="stat">
+        <span>Average Game Length</span>
+        <span>{{this.avgTurns}} Turns</span>
+    </div>
+    <div class="stat">
+        <span>Total Kills</span>
+        <span>{{this.kills}}</span>
+    </div>
+    <div class="stat">
+        <span>Damage Kills</span>
+        <span>{{this.dmgKills}}</span>
+    </div>
+    <div class="stat">
+        <span>Commander Damage Kills</span>
+        <span>{{this.cmdkills}}</span>
+    </div>
+    <div class="stat">
+        <span>Infect Kills</span>
+        <span>{{this.poisonKills}}</span>
+    </div>
+    </div>
+    
+    
+      <h3>Favorite Commander</h3>
+    
+    
+    
+      <div>
+        <div>
+          <div style="display: block">
+            <canvas baseChart
+              [datasets]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [legend]="barChartLegend"
+              [chartType]="barChartType">
+            </canvas>
+          </div>
+          <!-- <button mat-button mat-raised-button color="primary" (click)="randomize()">Update</button> -->
+        </div>
+      </div>
+
+      </div>

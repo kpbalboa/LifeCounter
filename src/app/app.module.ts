@@ -15,6 +15,8 @@ import { LoginComponent } from './login/login.component';
 import { StatsHomeComponent } from './stats-home/stats-home.component';
 import { YouStatsComponent } from './you-stats/you-stats.component';
 import { FriendstatsComponent } from './friendstats/friendstats.component';
+import { GoogleChartComponent, GoogleChartsModule } from 'angular-google-charts';
+import { ChartsModule } from 'ng2-charts';
 
 
 // const config: SocketIoConfig = { url: 'http://localhost:3000', options: {"transports" : ["websocket"]}
@@ -61,7 +63,9 @@ const appRoutes : Routes = [
     BrowserModule,HttpClientModule,
      RouterModule.forRoot(appRoutes, { useHash: true}),
     FormsModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    GoogleChartsModule,
+    ChartsModule
   ],
   providers: [DataService],
   bootstrap: [AppComponent]

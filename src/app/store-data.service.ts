@@ -178,19 +178,24 @@ let opcmd = opsorted[0]+", "+opsorted[1];
     let cmdnumber = 0;
     
     killed.forEach((e: any) => {
-      if (e.loggedin){
+      console.log(e.diedTo)
+      if (players[e.player].loggedin){
         killedlist == killedlist + players[e.player].Named
       }
-      if(players[e.player].Name != players[you].Name){
-        killednumber ++;
+
+      console.log(e.player, you)
+      if(e.player != you){
+        killednumber = killednumber +1;
         if(e.diedTo == "Commander Dammage"){
-          cmdnumber ++;
+          cmdnumber = cmdnumber + 1;
         }else if(e.diedTo == "Dammage"){
-          Dmgnumber ++;
+          Dmgnumber = Dmgnumber + 1;
         }else if(e.diedTo == "Infect")
-        poisonnumber++;
+        poisonnumber = poisonnumber +1;
       }
     });
+
+    console.log(killed, killedlist, killednumber)
 
 
     let gameData = {
@@ -242,9 +247,7 @@ let opcmd = opsorted[0]+", "+opsorted[1];
 
   getMyStats(data: any){
   
-    this.http.post('http://localhost:3000/getGameData', data).subscribe((res)=>{
-      console.log(res)
-    })
+   return this.http.post('http://localhost:3000/getGameData', data);
   
   }
 }

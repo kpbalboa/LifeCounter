@@ -11,7 +11,7 @@
     <ng-template #userBlock>
         <span>{{this.userName}}</span>
     </ng-template>
-    <label>Commander</label>
+    <!-- <label>Commander</label>
     <input type="text" id="commanderSearch"><button (click)="searchCommander()">Search</button>
 
      <div class="cmdrGrid">    
@@ -22,7 +22,31 @@
             {{item.name}}</label>
     <input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
     </div>
-</div>  
+</div>   -->
+
+<label>Commander</label>
+<input type="text"  id="commanderSearch"><span class="fakeButton" (click)="searchCommander()">Search</span>
+
+       
+
+<div *ngFor="let item of commanders; let i = index" class="cmdr">
+<label for="{{item.name}}"><div *ngIf='item.image_uris != undefined; else twoface'><img src={{item.image_uris.small}} alt=""></div>
+    <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+    
+    {{item.name}}</label>
+<input required ngModel type="radio" id="{{item.name}}"  name="Commander" value="{{i}}">
+</div>
+
+<label>Partner Commander: (optional)</label>
+<input type="text"  id="partnercommanderSearch"><span class="fakeButton" (click)="searchPartners()">Search</span>
+
+<div *ngFor="let item of partners; let i = index" class="cmdr">
+<label for="{{item.name}}"><div *ngIf='item.image_uris != undefined; else twoface'><img src={{item.image_uris.small}} alt=""></div>
+    <ng-template #twoface><img src={{item.card_faces[0].image_uris.small}} alt=""></ng-template>
+    
+    {{item.name}}</label>
+<input ngModel type="radio" id="{{item.name}}"  name="Partner" value="{{i}}">
+</div>
     <button>Submit</button>
 
 

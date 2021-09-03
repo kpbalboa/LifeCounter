@@ -48,3 +48,17 @@ button{
 button:active{
     transform: translateY(4px);
 }
+
+
+.fakeButton{
+    text-align: center;
+    color: #92ff1b;
+    background-color: black;
+    border: 3px solid #92ff1b;
+   
+    margin-top: 5px;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+    margin: auto;
+    min-width: 76px;
+}

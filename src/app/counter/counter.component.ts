@@ -72,6 +72,7 @@ this.data.loseGame(this.Losecons[form.value.Losecon])
 subGame(){
  
   this.data.SubGameData();
+  this.quit();
 }
 
  

@@ -17,7 +17,7 @@
     <label>Starting Life</label>
     <input type="number"   ngModel placeholder="40" value="40" #FirstName="ngModel" name="Life" autocomplete="off">
     <label>Commander</label>
-    <input type="text"  id="commanderSearch"><button (click)="searchCommander()">Search</button>
+    <input type="text"  id="commanderSearch"><span class="fakeButton" (click)="searchCommander()">Search</span>
 
            
   
@@ -30,7 +30,7 @@
 </div>
 
     <label>Partner Commander: (optional)</label>
-    <input type="text"  id="partnercommanderSearch"><button (click)="searchPartners()">Search</button>
+    <input type="text"  id="partnercommanderSearch"><span class="fakeButton" (click)="searchPartners()">Search</span>
 
 <div *ngFor="let item of partners; let i = index" class="cmdr">
     <label for="{{item.name}}"><div *ngIf='item.image_uris != undefined; else twoface'><img src={{item.image_uris.small}} alt=""></div>
