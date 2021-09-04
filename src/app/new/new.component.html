@@ -9,7 +9,7 @@
 
     <label>name</label>
     <div *ngIf="userName == undefined; else userBlock">
-    <input type="text" required ngModel  name="User" maxlength="10">
+    <input type="text" ngModel  name="User" maxlength="10">
     </div>
     <ng-template #userBlock>
         <span>{{this.userName}}</span>

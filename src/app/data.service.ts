@@ -18,9 +18,7 @@ export class DataService {
 
 
   constructor( private router: Router, private http: HttpClient, private store: StoreDataService ) { 
-    this.socket = io('http://localhost:3000');
-    // this.socket = io('http://192.168.1.47:3000');
-    // this.socket = io('http://140.82.114.4:3000');
+    this.socket = io('https://lifedataapp.us:5000');
     this.socket.on('get data', data =>{
       this.updatePlayers(data.players);
       if(this.you == undefined){

@@ -13,15 +13,16 @@ export class StoreDataService {
   constructor(private http: HttpClient) { }
 
   createAccount(item: any){
-    return this.http.post('http://localhost:3000/createUser', item)
-    // return this.http.post('http://192.168.1.47:3000/createUser', item)
-    // return this.http.get('http://localhost:3000/')
+
+    
+    return this.http.post('https://lifedataapp.us:5000/createUser', item)
+    
 
   }
 
   login(data: any){
-    return this.http.post('http://localhost:3000/login', data)
-    // return this.http.post('http://192.168.1.47:3000/login', data)
+    return this.http.post('https://lifedataapp.us:5000/login', data)
+
   }
 
   subGamneData(players: any, localdmgDlt: any, localLifegain: any, place: any, win: any, commanderDmg: any, lturn: any, turnsAlive: any, killedBy: any, killed: any, diedTo: any, you: number, ctaken: any, cdelt:any){
@@ -236,10 +237,8 @@ let opcmd = opsorted[0]+", "+opsorted[1];
        "DamageTaken": totalTaken
     }
 
-    console.log(gameData)
-
     
-    this.http.post('http://localhost:3000/subGameData', gameData).subscribe((res:any)=>{
+    this.http.post('https://lifedataapp.us:5000/subGameData', gameData).subscribe((res:any)=>{
       console.log(res)
     })
   }
@@ -247,7 +246,7 @@ let opcmd = opsorted[0]+", "+opsorted[1];
 
   getMyStats(data: any){
   
-   return this.http.post('http://localhost:3000/getGameData', data);
+  return this.http.post('https://lifedataapp.us:5000/getGameData', data);
   
   }
 }
