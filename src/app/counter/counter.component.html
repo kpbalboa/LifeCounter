@@ -1,22 +1,21 @@
+<div class="body">
 <div class="header">
 <span>Turn: {{this.turnNumber}}</span>
 <span class="room">ROOM: {{this.roomNum}}</span>
 </div>
 <div *ngIf="this.cmdrDmg.length != 0;" class="allOpps">
-    <div *ngFor="let player of players; let i = index">
+    <div *ngFor="let player of players; let i = index" class="playercontainer">
         <div  *ngIf="i !== this.you" class="player">
             <div class="idBadge">
             <img src={{this.players[i].commanderImg}} alt="" class="playerImage">
     <span>{{this.players[i].Name}}</span>
     </div>
-    <!-- <span>{{this.players[i].Life}}</span> -->
     <div class="buttons" *ngIf="this.cmdrDmg.length !== 0; else orderBlock">
         <div>
     <button (click)="addLife(i, 1)">+</button>
     <span (click)="toggleDammage(i, 'damage', undefined)">♥{{this.players[i].Life}}</span>
     <button (click)="subtractLife(i, 1)">-</button>
 </div>
-    <!-- <div *ngIf="this.cmdrDmg.length !== 0"> -->
         <div>
         
     <button (click)="addCmdrDmg(this.mainCommanderI, i, 1)">Add</button>
@@ -37,14 +36,7 @@
                 <button (click)="subtractPoison(i, 1)">-</button>
                 <img src="../../assets/poison.png" alt="" (click)="toggleDammage(i, 'poison', undefined)">
             </div>
-    <!-- <div *ngFor="let dmg of cmdrDmg[i]; let j = index">
-        <div *ngIf="j !== this.you" class="commander">
-         <img src={{this.players[j].commanderImg}} alt=""  (click)="toggleDammage(i, 'commander', j)">
-          <button (click)="addCmdrDmg(i, j, 1)">add</button>
-         <span>{{dmg}}</span>
-         <button (click)="subCmdrDmg(i, j, 1)">sub </button>
-    </div>
-    </div> -->
+ 
 
     <div *ngFor="let dmg of commanderList; let j = index" class="commander">
         <button (click)="addCmdrDmg(j,i, 1)">+</button>
@@ -75,7 +67,7 @@
     <button (click)="moveDown(i)">down</button>
 </div>
 </div>
-<button (click)="startGame()">start game</button> 
+<button (click)="startGame()" class="startButton">start game</button> 
 </div>
 
 <div class="you">
@@ -257,3 +249,4 @@
     
 
     </div>
+</div>
