@@ -190,6 +190,7 @@ this._roomNum.next(this.roomNumber);
 })
 
 this.socket.on("join room", (data, cName, cImg, logged, user, pName, pImg)=>{
+  console.log(pName, pImg)
 if (this.you == 0){
 this.addPlayer(data, cName, cImg, logged, user, pName, pImg)
 } 
@@ -352,13 +353,13 @@ joinRoom(num: any, CommanderName:any , CommanderImg: any,  partner?: any, partne
   this.roomNumber = num.roomNum
   this._roomNum.next(this.roomNumber);
 
-
+console.log(partner, partnerImg)
 
   if(this.userName == undefined){
 
-    this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: false, UserName: num.User, partner, partnerImg});
+    this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: false, UserName: num.User, partner: partner, partnerImg: partnerImg});
     }else{
-      this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: true, UserName: this.userName, partner, partnerImg });
+      this.socket.emit('join room', { roomNumber : num, commander: CommanderName, CImage : CommanderImg, LoggedIn: true, UserName: this.userName, partner: partner, partnerImg:  partnerImg });
     }
 
     }
@@ -396,6 +397,8 @@ updateActiveTurn(data: any){
 }
 
 addPlayer(data: any, cName:any, cImg:any, logged: boolean, user: string, pName?: any, pImg?: any){
+
+  console.log(pName, pImg)
 const player1 = new Player(user, cName, cImg, this.startLife, logged, pName, pImg);
 this.players.push(player1)
 this.sendGameData();
@@ -463,13 +466,16 @@ startGame(turnOrder: any){
     }
   }
 
-  this.players.forEach((player: any) => {
-this.commanders.push({"commander" : player.Commander, "image": player.commanderImg})
+  this.players.forEach((player: any, index: number) => {
+this.commanders.push({"commander" : player.Commander, "image": player.commanderImg, "playerID": index})
 if (player.partner != undefined){
-  this.commanders.push({"commander" : player.partner, "image": player.partnerImg})
+  this.commanders.push({"commander" : player.partner, "image": player.partnerImg, "playerID": index})
 }
   });
 
+  
+
+ 
 
   for(var i=0; i<this.commanders.length; i++) {
     this.commanderDmg[i] = [];

@@ -221,7 +221,7 @@ subGame(){
 
     this.data.commanderList.subscribe((res:boolean)=>{
       this.commanderList= res;
-      this.mainCommanderI = this.findWithAttr(this.commanderList, "commander", this.players[this.you].Commander)
+      this.mainCommanderI = this.findWithAttr(this.commanderList, "playerID", this.you)
     })
     
   }
